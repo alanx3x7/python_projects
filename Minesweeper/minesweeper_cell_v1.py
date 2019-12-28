@@ -6,6 +6,7 @@ from PyQt5.QtCore import *
 
 IMAGE_MINE = QImage("./images/mine.jpg")
 IMAGE_FLAG = QImage("./images/flag.jpg")
+IMAGE_GRAY = QImage("./images/gray.png")
 
 
 class Cell(QWidget):
@@ -32,7 +33,7 @@ class Cell(QWidget):
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
         r = event.rect()
-        outer, inner = Qt.gray, Qt.lightGray
+        outer, inner = Qt.darkBlue, Qt.cyan
         p.fillRect(r, QBrush(inner))
         pen = QPen(outer)
         pen.setWidth(1)
@@ -40,12 +41,10 @@ class Cell(QWidget):
         p.drawRect(r)
 
         if self.is_revealed:
-            outer, inner = Qt.blue, Qt.blue
-            p.fillRect(r, QBrush(inner))
-            pen = QPen(outer)
-            pen.setWidth(1)
-            p.setPen(pen)
-            p.drawRect(r)
+            if self.is_bomb:
+                p.drawPixmap(r, QPixmap(IMAGE_MINE))
+            else:
+                p.drawPixmap(r, QPixmap(IMAGE_GRAY))
 
         elif self.is_flagged:
             p.drawPixmap(r, QPixmap(IMAGE_FLAG))
