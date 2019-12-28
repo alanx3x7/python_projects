@@ -11,7 +11,7 @@ IMAGE_FLAG = QImage("./images/flag.jpg")
 class Cell(QWidget):
     expandable = pyqtSignal(int, int)
     clicked = pyqtSignal()
-    ohno = pyqtSignal()
+    oh_no = pyqtSignal()
 
     def __init__(self, x, y, *args, **kwargs):
         super(Cell, self).__init__(*args, **kwargs)
@@ -82,4 +82,4 @@ class Cell(QWidget):
                 elif e.button() == Qt.LeftButton:
                     self.click()
                     # if self.is_mine:
-                    #     self.ohno.emit()
+                    #     self.oh_no.emit()
