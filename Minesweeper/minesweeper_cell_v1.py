@@ -13,6 +13,7 @@ class Cell(QWidget):
 
     expandable = pyqtSignal(int, int)
     clicked = pyqtSignal()
+    double_clicked = pyqtSignal(int, int)
     oh_no = pyqtSignal()
 
     def __init__(self, x, y, *args, **kwargs):
@@ -30,6 +31,8 @@ class Cell(QWidget):
         self.is_mine = False
         self.initially_clicked = False
         self.num_adjacent = 0
+        self.mouse_clicks = 0
+        self.is_double_click = False
 
     def reset_cell(self):
         self.is_revealed = False
@@ -74,15 +77,15 @@ class Cell(QWidget):
         self.is_revealed = True
         self.update()
 
+        # If there are no adjacent bombs, send an expandable signal
+        if self.num_adjacent == 0:
+            self.expandable.emit(self.x, self.y)
+
     def click(self):
 
         # Reveals if not revealed
         if not self.is_revealed:
             self.reveal()
-
-            # If there are no adjacent bombs, send an expandable signal
-            if self.num_adjacent == 0:
-                self.expandable.emit(self.x, self.y)
 
         # Send a clicked signal
         self.clicked.emit()
@@ -92,6 +95,9 @@ class Cell(QWidget):
             self.is_flagged = True
             self.update()
 
+    def mousePressEvent(self, e):
+        self.mouse_clicks = self.mouse_clicks + 1
+
     def mouseReleaseEvent(self, e):
 
         # Checks that the mouse is released over the same cell it was pressed on
@@ -99,12 +105,22 @@ class Cell(QWidget):
         if -5 <= e.x() <= self.button_size + 5:
             if -5 <= e.y() <= self.button_size + 5:
 
+                if self.mouse_clicks == 2:
+                    self.is_double_click = True
+                    if self.is_revealed:
+                        self.double_clicked.emit(self.x, self.y)
+
+                elif self.is_double_click:
+                    self.is_double_click = False
+
                 # If it was the right click and not revealed, set the flag
-                if e.button() == Qt.RightButton and not self.is_revealed:
+                elif e.button() == Qt.RightButton and not self.is_revealed:
                     self.flag()
 
                 # If it was the left click, reveal it
                 elif e.button() == Qt.LeftButton:
                     self.click()
-                    # if self.is_mine:
-                    #     self.oh_no.emit()
+                    if self.is_mine:
+                        self.oh_no.emit()
+
+        self.mouse_clicks = self.mouse_clicks - 1

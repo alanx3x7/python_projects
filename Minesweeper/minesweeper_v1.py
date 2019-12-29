@@ -48,6 +48,8 @@ class MainWindow(QMainWindow):
                 w = Cell(x, y)
                 self.grid.addWidget(w, y, x)
                 w.expandable.connect(self.expand_reveal)
+                w.oh_no.connect(self.game_over)
+                w.double_clicked.connect(self.expand_dc_reveal)
 
     def set_up_map(self):
 
@@ -87,6 +89,29 @@ class MainWindow(QMainWindow):
                 w = self.grid.itemAtPosition(yi, xi).widget()
                 if not w.is_mine:
                     w.click()
+
+    def expand_dc_reveal(self, x, y):
+        t = self.grid.itemAtPosition(y, x).widget()
+
+        flags_adjacent = 0
+        for xi in range(max(0, x - 1), min(x + 2, self.board_x_size)):
+            for yi in range(max(0, y - 1), min(y + 2, self.board_y_size)):
+                w = self.grid.itemAtPosition(yi, xi).widget()
+                if w.is_flagged:
+                    flags_adjacent = flags_adjacent + 1
+
+        if flags_adjacent == t.num_adjacent:
+            for xi in range(max(0, x - 1), min(x + 2, self.board_x_size)):
+                for yi in range(max(0, y - 1), min(y + 2, self.board_y_size)):
+                    w = self.grid.itemAtPosition(yi, xi).widget()
+                    if not w.is_flagged:
+                        w.reveal()
+
+    def game_over(self):
+        for x in range(0, self.board_x_size):
+            for y in range(0, self.board_y_size):
+                w = self.grid.itemAtPosition(y, x).widget()
+                w.reveal()
 
 
 if __name__ == '__main__':
