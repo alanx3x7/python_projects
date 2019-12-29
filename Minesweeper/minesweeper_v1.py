@@ -47,6 +47,7 @@ class MainWindow(QMainWindow):
             for y in range(0, self.board_y_size):
                 w = Cell(x, y)
                 self.grid.addWidget(w, y, x)
+                w.expandable.connect(self.expand_reveal)
 
     def set_up_map(self):
 
@@ -64,7 +65,6 @@ class MainWindow(QMainWindow):
             for y in range(0, self.board_y_size):
                 w = self.grid.itemAtPosition(y, x).widget()
                 w.num_adjacent = self.get_adjacency_n(x, y)
-                print(w.num_adjacent)
 
     def get_adjacency_n(self, x, y):
         positions = self.get_surrounding(x, y)
@@ -80,6 +80,13 @@ class MainWindow(QMainWindow):
                 positions.append(self.grid.itemAtPosition(yi, xi).widget())
 
         return positions
+
+    def expand_reveal(self, x, y):
+        for xi in range(max(0, x - 1), min(x + 2, self.board_x_size)):
+            for yi in range(max(0, y - 1), min(y + 2, self.board_y_size)):
+                w = self.grid.itemAtPosition(yi, xi).widget()
+                if not w.is_mine:
+                    w.click()
 
 
 if __name__ == '__main__':

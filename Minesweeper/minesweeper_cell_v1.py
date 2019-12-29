@@ -10,6 +10,7 @@ IMAGE_GRAY = QImage("./images/gray.png")
 
 
 class Cell(QWidget):
+
     expandable = pyqtSignal(int, int)
     clicked = pyqtSignal()
     oh_no = pyqtSignal()
@@ -69,17 +70,21 @@ class Cell(QWidget):
             p.setPen(pen)
             p.drawRect(r)
 
-
     def reveal(self):
         self.is_revealed = True
         self.update()
 
     def click(self):
+
+        # Reveals if not revealed
         if not self.is_revealed:
             self.reveal()
-            # if self.adjacent_n == 0:
-            #     self.expandable.emit(self.x, self.y)
 
+            # If there are no adjacent bombs, send an expandable signal
+            if self.num_adjacent == 0:
+                self.expandable.emit(self.x, self.y)
+
+        # Send a clicked signal
         self.clicked.emit()
 
     def flag(self):
