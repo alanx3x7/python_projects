@@ -20,6 +20,7 @@ class MainWindow(QMainWindow):
         self.board_y_size = 10
         self.num_mines = 30
         self.setWindowTitle(self.title)
+        self.first_already_clicked = False
 
         w = QWidget()
         vb = QVBoxLayout()
@@ -48,6 +49,7 @@ class MainWindow(QMainWindow):
             for y in range(0, self.board_y_size):
                 w = Cell(x, y)
                 self.grid.addWidget(w, y, x)
+                w.clicked.connect(self.cell_clicked)
                 w.expandable.connect(self.expand_reveal)
                 w.oh_no.connect(self.game_over)
                 w.double_clicked.connect(self.expand_dc_reveal)
@@ -116,6 +118,8 @@ class MainWindow(QMainWindow):
 
     def button_click(self):
 
+        self.first_already_clicked = False
+
         # Clear all mine positions
         for x in range(0, self.board_x_size):
             for y in range(0, self.board_y_size):
@@ -124,7 +128,18 @@ class MainWindow(QMainWindow):
 
         self.set_up_map()
 
+    def cell_clicked(self, x, y):
 
+        if not self.first_already_clicked:
+            t = self.grid.itemAtPosition(y, x).widget()
+            print(t.num_adjacent)
+            while t.num_adjacent != 0:
+                print("Redoing")
+                self.button_click()
+                t = self.grid.itemAtPosition(y, x).widget()
+                print("Num adjacent %d at (%d, %d)" % (t.num_adjacent, x, y))
+            self.first_already_clicked = True
+            t.click()
 
 
 if __name__ == '__main__':
