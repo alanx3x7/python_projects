@@ -150,7 +150,7 @@ class MainWindow(QMainWindow):
         self.set_up_map()
         self.mines_left = self.num_mines
         self.clock.setText("000")
-        self.mines.setText("000")
+        self.mines.setText("%03d" % self.mines_left)
 
     def cell_clicked(self, x, y):
 
@@ -174,10 +174,10 @@ class MainWindow(QMainWindow):
         if num_clicked == self.board_x_size * self.board_y_size - self.num_mines:
             self.clock.setText("Hooray!")
 
-    def cell_flagged(self, x, y):
+    def cell_flagged(self, x, y, add):
 
         t = self.grid.itemAtPosition(y, x).widget()
-        self.mines_left = self.mines_left - 1
+        self.mines_left = self.mines_left - add
         self.mines.setText("%03d" % self.mines_left)
 
 
