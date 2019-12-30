@@ -19,17 +19,36 @@ class MainWindow(QMainWindow):
         self.board_x_size = 20
         self.board_y_size = 10
         self.num_mines = 30
+        self.mines_left = self.num_mines
         self.setWindowTitle(self.title)
         self.first_already_clicked = False
+        self.num_cells_clicked = 0
 
         w = QWidget()
         vb = QVBoxLayout()
 
         hb = QHBoxLayout()
-        self.button = QPushButton("Reset", self)
-        self.button.setFixedSize(QSize(32, 32))
-        self.button.pressed.connect(self.button_click)
-        hb.addWidget(self.button)
+
+        self.reset_button = QPushButton("Reset", self)
+        self.reset_button.setFixedSize(QSize(64, 32))
+        self.reset_button.pressed.connect(self.button_click)
+        hb.addWidget(self.reset_button)
+
+        self.clock = QLabel()
+        self.clock.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        f = self.clock.font()
+        f.setPointSize(24)
+        f.setWeight(75)
+        self.clock.setFont(f)
+        self.clock.setText("000")
+        hb.addWidget(self.clock)
+
+        self.mines = QLabel()
+        self.mines.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.mines.setFont(f)
+        self.mines.setText("%03d" % self.num_mines)
+        hb.addWidget(self.mines)
+
         vb.addLayout(hb)
 
         self.grid = QGridLayout()
@@ -53,6 +72,7 @@ class MainWindow(QMainWindow):
                 w.expandable.connect(self.expand_reveal)
                 w.oh_no.connect(self.game_over)
                 w.double_clicked.connect(self.expand_dc_reveal)
+                w.flagged.connect(self.cell_flagged)
 
     def set_up_map(self):
 
@@ -115,6 +135,7 @@ class MainWindow(QMainWindow):
             for y in range(0, self.board_y_size):
                 w = self.grid.itemAtPosition(y, x).widget()
                 w.reveal()
+        self.clock.setText("Failed!")
 
     def button_click(self):
 
@@ -127,6 +148,9 @@ class MainWindow(QMainWindow):
                 w.reset_cell()
 
         self.set_up_map()
+        self.mines_left = self.num_mines
+        self.clock.setText("000")
+        self.mines.setText("000")
 
     def cell_clicked(self, x, y):
 
@@ -140,6 +164,21 @@ class MainWindow(QMainWindow):
                 print("Num adjacent %d at (%d, %d)" % (t.num_adjacent, x, y))
             self.first_already_clicked = True
             t.click()
+
+        num_clicked = 0
+        for x in range(0, self.board_x_size):
+            for y in range(0, self.board_y_size):
+                w = self.grid.itemAtPosition(y, x).widget()
+                if w.is_revealed:
+                    num_clicked = num_clicked + 1
+        if num_clicked == self.board_x_size * self.board_y_size - self.num_mines:
+            self.clock.setText("Hooray!")
+
+    def cell_flagged(self, x, y):
+
+        t = self.grid.itemAtPosition(y, x).widget()
+        self.mines_left = self.mines_left - 1
+        self.mines.setText("%03d" % self.mines_left)
 
 
 if __name__ == '__main__':

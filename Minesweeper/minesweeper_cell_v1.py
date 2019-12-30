@@ -15,6 +15,7 @@ class Cell(QWidget):
     clicked = pyqtSignal(int, int)
     double_clicked = pyqtSignal(int, int)
     oh_no = pyqtSignal()
+    flagged = pyqtSignal(int, int)
 
     def __init__(self, x, y, *args, **kwargs):
         super(Cell, self).__init__(*args, **kwargs)
@@ -94,6 +95,8 @@ class Cell(QWidget):
         if not self.is_flagged or not self.is_revealed:
             self.is_flagged = True
             self.update()
+
+        self.flagged.emit(self.x, self.y)
 
     def mousePressEvent(self, e):
         self.mouse_clicks = self.mouse_clicks + 1
