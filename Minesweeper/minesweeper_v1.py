@@ -25,8 +25,9 @@ class MainWindow(QMainWindow):
         vb = QVBoxLayout()
 
         hb = QHBoxLayout()
-        self.button = QPushButton()
+        self.button = QPushButton("Reset", self)
         self.button.setFixedSize(QSize(32, 32))
+        self.button.pressed.connect(self.button_click)
         hb.addWidget(self.button)
         vb.addLayout(hb)
 
@@ -112,6 +113,18 @@ class MainWindow(QMainWindow):
             for y in range(0, self.board_y_size):
                 w = self.grid.itemAtPosition(y, x).widget()
                 w.reveal()
+
+    def button_click(self):
+
+        # Clear all mine positions
+        for x in range(0, self.board_x_size):
+            for y in range(0, self.board_y_size):
+                w = self.grid.itemAtPosition(y, x).widget()
+                w.reset_cell()
+
+        self.set_up_map()
+
+
 
 
 if __name__ == '__main__':

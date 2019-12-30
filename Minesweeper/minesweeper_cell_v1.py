@@ -20,7 +20,7 @@ class Cell(QWidget):
         super(Cell, self).__init__(*args, **kwargs)
 
         # Sets the size and the position of the cell
-        self.button_size = 20
+        self.button_size = 40
         self.setFixedSize(QSize(self.button_size, self.button_size))
         self.x = x
         self.y = y
