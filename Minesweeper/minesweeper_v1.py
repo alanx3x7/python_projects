@@ -17,9 +17,9 @@ class MainWindow(QMainWindow):
         super().__init__()
 
         self.title = 'Alan\'s Minesweeper'
-        self.board_x_size = 20
-        self.board_y_size = 10
-        self.num_mines = 30
+        self.board_x_size = 30
+        self.board_y_size = 16
+        self.num_mines = 99
         self.mines_left = self.num_mines
         self.setWindowTitle(self.title)
         self.first_already_clicked = False
@@ -140,6 +140,8 @@ class MainWindow(QMainWindow):
                     w = self.grid.itemAtPosition(yi, xi).widget()
                     if not w.is_flagged:
                         w.reveal()
+                        if w.is_mine:
+                            self.game_over()
 
     def game_over(self):
         for x in range(0, self.board_x_size):
