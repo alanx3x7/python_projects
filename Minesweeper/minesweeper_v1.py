@@ -1,6 +1,7 @@
 import math
 import sys
 import random
+import time
 
 import numpy as np
 from PyQt5.QtGui import *
@@ -23,6 +24,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(self.title)
         self.first_already_clicked = False
         self.num_cells_clicked = 0
+        self.game_status = 0
 
         w = QWidget()
         vb = QVBoxLayout()
@@ -34,20 +36,29 @@ class MainWindow(QMainWindow):
         self.reset_button.pressed.connect(self.button_click)
         hb.addWidget(self.reset_button)
 
-        self.clock = QLabel()
-        self.clock.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        f = self.clock.font()
+        self.status = QLabel()
+        self.status.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        f = self.status.font()
         f.setPointSize(24)
         f.setWeight(75)
-        self.clock.setFont(f)
-        self.clock.setText("000")
-        hb.addWidget(self.clock)
+        self.status.setFont(f)
+        self.status.setText("000")
+        hb.addWidget(self.status)
 
         self.mines = QLabel()
         self.mines.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.mines.setFont(f)
         self.mines.setText("%03d" % self.num_mines)
         hb.addWidget(self.mines)
+
+        self.clock = QLabel()
+        self.clock.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.clock.setFont(f)
+        self.clock.setText("000")
+        self._timer = QTimer()
+        self._timer.timeout.connect(self.update_timer)
+        self._timer.start(1000)  # 1 second timer
+        hb.addWidget(self.clock)
 
         vb.addLayout(hb)
 
@@ -135,7 +146,7 @@ class MainWindow(QMainWindow):
             for y in range(0, self.board_y_size):
                 w = self.grid.itemAtPosition(y, x).widget()
                 w.reveal()
-        self.clock.setText("Failed!")
+        self.status.setText("Failed!")
 
     def button_click(self):
 
@@ -149,8 +160,9 @@ class MainWindow(QMainWindow):
 
         self.set_up_map()
         self.mines_left = self.num_mines
-        self.clock.setText("000")
+        self.status.setText("000")
         self.mines.setText("%03d" % self.mines_left)
+        self.clock.setText("000")
 
     def cell_clicked(self, x, y):
 
@@ -164,6 +176,8 @@ class MainWindow(QMainWindow):
                 print("Num adjacent %d at (%d, %d)" % (t.num_adjacent, x, y))
             self.first_already_clicked = True
             t.click()
+            self.game_status = 1
+            self._timer_start_nsecs = int(time.time())
 
         num_clicked = 0
         for x in range(0, self.board_x_size):
@@ -172,13 +186,19 @@ class MainWindow(QMainWindow):
                 if w.is_revealed:
                     num_clicked = num_clicked + 1
         if num_clicked == self.board_x_size * self.board_y_size - self.num_mines:
-            self.clock.setText("Hooray!")
+            self.status.setText("Hooray!")
+            self.game_status = 0
 
     def cell_flagged(self, x, y, add):
 
         t = self.grid.itemAtPosition(y, x).widget()
         self.mines_left = self.mines_left - add
         self.mines.setText("%03d" % self.mines_left)
+
+    def update_timer(self):
+        if self.game_status == 1:
+            n_secs = int(time.time()) - self._timer_start_nsecs
+            self.clock.setText("%03d" % n_secs)
 
 
 if __name__ == '__main__':
