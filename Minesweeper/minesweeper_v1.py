@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
         self.status = QLabel()
         self.status.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         f = self.status.font()
-        f.setPointSize(24)
+        f.setPointSize(20)
         f.setWeight(75)
         self.status.setFont(f)
         self.status.setText("000")
@@ -54,10 +54,10 @@ class MainWindow(QMainWindow):
         self.clock = QLabel()
         self.clock.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.clock.setFont(f)
-        self.clock.setText("000")
+        self.clock.setText("Time: 000.000")
         self._timer = QTimer()
         self._timer.timeout.connect(self.update_timer)
-        self._timer.start(1000)  # 1 second timer
+        self._timer.start(10)  # 1 second timer
         hb.addWidget(self.clock)
 
         vb.addLayout(hb)
@@ -162,7 +162,8 @@ class MainWindow(QMainWindow):
         self.mines_left = self.num_mines
         self.status.setText("000")
         self.mines.setText("%03d" % self.mines_left)
-        self.clock.setText("000")
+        self.clock.setText("Time: 000.000")
+        self.game_status = 0
 
     def cell_clicked(self, x, y):
 
@@ -197,8 +198,8 @@ class MainWindow(QMainWindow):
 
     def update_timer(self):
         if self.game_status == 1:
-            n_secs = int(time.time()) - self._timer_start_nsecs
-            self.clock.setText("%03d" % n_secs)
+            n_secs = time.time() - self._timer_start_nsecs
+            self.clock.setText("Time: %07.3f" % n_secs)
 
 
 if __name__ == '__main__':
