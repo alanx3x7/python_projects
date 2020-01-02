@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3ad5d6a5-a5dc-4948-a4d7-6a805a5c862a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Python_Projects.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Python_Projects.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Minesweeper/minesweeper_v1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Minesweeper/minesweeper_v1.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,7 +29,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Minesweeper/minesweeper_v1.py" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -44,7 +43,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.minesweeper">
+  <component name="RunManager" selected="Python.second_program">
     <configuration name="first_program" type="PythonConfigurationType" factoryName="Python">
       <module name="Python_Projects" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -126,6 +125,9 @@
       <updated>1577450511893</updated>
     </task>
     <servers />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.md" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
