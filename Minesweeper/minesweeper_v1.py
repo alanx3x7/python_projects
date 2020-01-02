@@ -1,14 +1,25 @@
+# Minesweeper main class made from PyQt5
+# Author: Alan Lai
+# Email: alan_lai@jhu.edu
+# Version: 1.0
+# Last Updated: 2020/01/02
+
+# Typical imports
 import sys
 import random
 import time
 
+# PyQt5 specific imports
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-from minesweeper_cell_v1 import Cell
+# Importing the class file for the individual cells
+from .minesweeper_cell_v1 import Cell
 
 
 class MainWindow(QMainWindow):
+    """ Main window for the minesweeper interface
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -22,6 +33,7 @@ class MainWindow(QMainWindow):
         self.first_already_clicked = False
         self.num_cells_clicked = 0
         self.game_status = 0
+        self._timer_start_nsecs = 0
 
         w = QWidget()
         vb = QVBoxLayout()
@@ -31,7 +43,7 @@ class MainWindow(QMainWindow):
         self.reset_button = QPushButton("Reset", self)
         self.reset_button.setFixedSize(QSize(64, 32))
         self.reset_button.pressed.connect(self.button_click)
-        hb.addWidget(self.reset_button)
+        hb.addWidget(self.reset_button, 0, Qt.Alignment())
 
         self.status = QLabel()
         self.status.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
@@ -40,13 +52,13 @@ class MainWindow(QMainWindow):
         f.setWeight(75)
         self.status.setFont(f)
         self.status.setText("000")
-        hb.addWidget(self.status)
+        hb.addWidget(self.status, 0, Qt.Alignment())
 
         self.mines = QLabel()
         self.mines.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.mines.setFont(f)
         self.mines.setText("%03d" % self.num_mines)
-        hb.addWidget(self.mines)
+        hb.addWidget(self.mines, 0, Qt.Alignment())
 
         self.clock = QLabel()
         self.clock.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
@@ -55,7 +67,7 @@ class MainWindow(QMainWindow):
         self._timer = QTimer()
         self._timer.timeout.connect(self.update_timer)
         self._timer.start(10)  # 1 second timer
-        hb.addWidget(self.clock)
+        hb.addWidget(self.clock, 0, Qt.Alignment())
 
         vb.addLayout(hb)
 
@@ -191,7 +203,7 @@ class MainWindow(QMainWindow):
             self.status.setText("Hooray!")
             self.game_status = 0
 
-    def cell_flagged(self, x, y, add):
+    def cell_flagged(self, add):
         self.mines_left = self.mines_left - add
         self.mines.setText("%03d" % self.mines_left)
 

@@ -1,3 +1,8 @@
+# Minesweeper cell class file made from PyQt5
+# Author: Alan Lai
+# Email: alan_lai@jhu.edu
+# Version: 1.0
+# Last Updated: 2020/01/02
 
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -15,7 +20,7 @@ class Cell(QWidget):
     clicked = pyqtSignal(int, int)
     double_clicked = pyqtSignal(int, int)
     oh_no = pyqtSignal()
-    flagged = pyqtSignal(int, int, int)
+    flagged = pyqtSignal(int)
 
     def __init__(self, x, y, *args, **kwargs):
         super(Cell, self).__init__(*args, **kwargs)
@@ -95,11 +100,11 @@ class Cell(QWidget):
         if not self.is_flagged and not self.is_revealed:
             self.is_flagged = True
             self.update()
-            self.flagged.emit(self.x, self.y, 1)
+            self.flagged.emit(1)
         elif self.is_flagged and not self.is_revealed:
             self.is_flagged = False
             self.update()
-            self.flagged.emit(self.x, self.y, -1)
+            self.flagged.emit(-1)
 
     def mousePressEvent(self, e):
         self.mouse_clicks = self.mouse_clicks + 1
