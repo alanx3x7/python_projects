@@ -1,10 +1,7 @@
-import math
 import sys
 import random
 import time
 
-import numpy as np
-from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
@@ -13,8 +10,8 @@ from minesweeper_cell_v1 import Cell
 
 class MainWindow(QMainWindow):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.title = 'Alan\'s Minesweeper'
         self.board_x_size = 30
@@ -147,8 +144,10 @@ class MainWindow(QMainWindow):
         for x in range(0, self.board_x_size):
             for y in range(0, self.board_y_size):
                 w = self.grid.itemAtPosition(y, x).widget()
-                w.reveal()
+                w.is_revealed = True
+                w.update()
         self.status.setText("Failed!")
+        self.game_status = 0
 
     def button_click(self):
 
@@ -193,8 +192,6 @@ class MainWindow(QMainWindow):
             self.game_status = 0
 
     def cell_flagged(self, x, y, add):
-
-        t = self.grid.itemAtPosition(y, x).widget()
         self.mines_left = self.mines_left - add
         self.mines.setText("%03d" % self.mines_left)
 
