@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
 # Importing the class file for the individual cells
-from .minesweeper_cell_v1 import Cell
+from minesweeper_cell_v1 import Cell
 
 
 class MainWindow(QMainWindow):
