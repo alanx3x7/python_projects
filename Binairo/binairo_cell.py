@@ -17,7 +17,7 @@ IMAGE_GRAY = QImage("./images/gray.png")
 
 class Cell(QWidget):
 
-    clicked = pyqtSignal(int, int)
+    clicked = pyqtSignal(int, int, int)
 
     def __init__(self, x, y, *args, **kwargs):
         super(Cell, self).__init__(*args, **kwargs)
@@ -76,5 +76,5 @@ class Cell(QWidget):
             elif self.selected_state == 2:
                 self.selected_state = 1
 
-        self.clicked.emit(self.x, self.y)
+        self.clicked.emit(self.x, self.y, self.selected_state)
         self.update()
