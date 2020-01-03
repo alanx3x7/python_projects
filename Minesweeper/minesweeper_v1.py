@@ -2,7 +2,7 @@
 # Author: Alan Lai
 # Email: alan_lai@jhu.edu
 # Version: 1.0
-# Last Updated: 2020/01/02
+# Last Updated: 2020/01/03
 
 # Typical imports
 import sys
