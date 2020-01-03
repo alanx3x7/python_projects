@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3ad5d6a5-a5dc-4948-a4d7-6a805a5c862a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Binairo/binairo_cell.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Binairo/binairo_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,7 +29,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Minesweeper/minesweeper_v1.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Binairo/binairo_main.py" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunDashboard">
@@ -42,7 +44,28 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.minesweeper">
+  <component name="RunManager" selected="Python.binairo">
+    <configuration name="binairo" type="PythonConfigurationType" factoryName="Python">
+      <module name="Python_Projects" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\alanx\Documents\Python_Projects\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Binairo" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Binairo/binairo_main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="true" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="first_program" type="PythonConfigurationType" factoryName="Python">
       <module name="Python_Projects" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -110,6 +133,7 @@
       <item itemvalue="Python.first_program" />
       <item itemvalue="Python.second_program" />
       <item itemvalue="Python.minesweeper" />
+      <item itemvalue="Python.binairo" />
     </list>
   </component>
   <component name="SvnConfiguration">
