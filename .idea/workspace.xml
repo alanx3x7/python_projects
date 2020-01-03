@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3ad5d6a5-a5dc-4948-a4d7-6a805a5c862a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/alanx.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/alanx.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Minesweeper/minesweeper_v1.py" beforeDir="false" afterPath="$PROJECT_DIR$/Minesweeper/minesweeper_v1.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -43,7 +44,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.second_program">
+  <component name="RunManager" selected="Python.minesweeper">
     <configuration name="first_program" type="PythonConfigurationType" factoryName="Python">
       <module name="Python_Projects" />
       <option name="INTERPRETER_OPTIONS" value="" />
