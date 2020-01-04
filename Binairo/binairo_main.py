@@ -26,8 +26,9 @@ class MainWindow(QMainWindow):
         self.title = 'Alan\'s Binairo'          # Name of the window to be opened
         self.setWindowTitle(self.title)         # Sets the name of the window to be the title
 
-        self.board_x_size = 14                  # Initializes the x size of the board (width)
-        self.board_y_size = 14                  # Initializes the y size of the board (height)
+        self.board_x_size = 4                  # Initializes the x size of the board (width)
+        self.board_y_size = 4                  # Initializes the y size of the board (height)
+        self.num_initial_seed = 6
         self.board = np.zeros((self.board_y_size, self.board_x_size))
 
         self.num_blanks = self.board_x_size * self.board_y_size
@@ -38,6 +39,15 @@ class MainWindow(QMainWindow):
         w = QWidget()
         vb = QVBoxLayout()
         hb = QHBoxLayout()
+
+        # Create a button to solve the board
+        self.solve_button = QPushButton("Solve", self)
+        self.solve_button.setFixedSize(QSize(64, 32))
+        self.solve_button.pressed.connect(self.solve_button_click)  # Links the click to self.button_click function
+        hb.addWidget(self.solve_button, 0, Qt.Alignment())  # Adds the button to the horizontal box
+
+        # Add the horizontal box to the vertical box
+        vb.addLayout(hb)
 
         # Create a grid layout to hold all of the cell objects for each cell
         self.grid = QGridLayout()
@@ -50,7 +60,7 @@ class MainWindow(QMainWindow):
 
         # Initializes grid with cell objects and sets up the minefield
         self.init_map()
-        self.set_up_map()
+        self.set_up_board()
 
         # Displays the window
         self.show()
@@ -67,20 +77,12 @@ class MainWindow(QMainWindow):
                 # Connect the signals for each cell to the respective functions
                 w.clicked.connect(self.cell_clicked)                # Called when cell is clicked
 
-    def set_up_map(self):
+    def clear_board(self):
+        self.board = np.zeros((self.board_y_size, self.board_x_size))
 
-        positions = []
+    def set_up_board(self):
 
-        while len(positions) < 30:
-            x = random.randint(0, self.board_x_size - 1)
-            y = random.randint(0, self.board_y_size - 1)
-            if (x, y) not in positions:
-                random_state = random.choice([-1, 1])
-                self.board[y, x] = random_state
-                if not self.is_valid_board():
-                    self.board[y, x] = 0
-                else:
-                    positions.append((x, y))
+        positions = self.create_solvable_board()
 
         for i in range(len(positions)):
             x, y = positions[i]
@@ -88,19 +90,55 @@ class MainWindow(QMainWindow):
             w.selected_state = self.board[y, x]
             w.update()
 
+    def create_solvable_board(self):
+
+        can_be_solved = False
+        counter = 0
+
+        while not can_be_solved:
+            counter += 1
+            print(counter)
+
+            positions = []
+            self.clear_board()
+            while len(positions) < self.num_initial_seed:
+                x = random.randint(0, self.board_x_size - 1)
+                y = random.randint(0, self.board_y_size - 1)
+                if (x, y) not in positions:
+                    random_state = random.choice([-1, 1])
+                    self.board[y, x] = random_state
+                    if not self.is_valid_board():
+                        self.board[y, x] = 0
+                    else:
+                        positions.append((x, y))
+
+            self.apply_heuristics()
+            print(self.board)
+
+            if self.get_solution_to_board() is not None:
+                print("can be solved?")
+            can_be_solved = True
+            print(positions)
+            print(self.board)
+
+        return positions
+
     def get_solution_to_board(self):
 
         if not self.is_valid_board():
+            print("Invalid in recursion")
             return None
 
         for y in range(self.board_y_size):
             for x in range(self.board_x_size):
                 if self.board[y, x] == 0:
                     self.board[y, x] = 1
+                    print(self.board)
                     solution = self.get_solution_to_board()
 
                     if solution is None:
                         self.board[y, x] = -1
+                        print(self.board)
                         solution = self.get_solution_to_board()
 
                         if solution is None:
@@ -108,6 +146,8 @@ class MainWindow(QMainWindow):
 
                     self.board[y, x] = 0
                     return solution
+
+        return self.board
 
     def is_valid_board(self):
 
@@ -224,11 +264,11 @@ class MainWindow(QMainWindow):
         self.apply_simple_heuristics()
         self.apply_number_heuristics()
 
-        for y in range(self.board_y_size):
-            for x in range(self.board_x_size):
-                w = self.grid.itemAtPosition(y, x).widget()
-                w.selected_state = self.board[y, x]
-                w.update()
+        # for y in range(self.board_y_size):
+        #     for x in range(self.board_x_size):
+        #         w = self.grid.itemAtPosition(y, x).widget()
+        #         w.selected_state = self.board[y, x]
+        #         w.update()
 
     def apply_simple_heuristics(self):
 
@@ -295,13 +335,19 @@ class MainWindow(QMainWindow):
 
         self.board[y, x] = state
 
-        now = time.time()
+    def solve_button_click(self):
+
+        print(self.get_solution_to_board())
+        print("wer")
+
         counter = 0
+        now = time.time()
         while self.is_valid_board() and counter < 10:
             self.apply_heuristics()
             counter += 1
+        if not self.is_valid_board():
+            print("Cannot be solved!")
         print(time.time() - now)
-
 
 
 if __name__ == '__main__':
