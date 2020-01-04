@@ -26,14 +26,15 @@ class MainWindow(QMainWindow):
         self.title = 'Alan\'s Binairo'          # Name of the window to be opened
         self.setWindowTitle(self.title)         # Sets the name of the window to be the title
 
-        self.board_x_size = 4                  # Initializes the x size of the board (width)
-        self.board_y_size = 4                  # Initializes the y size of the board (height)
-        self.num_initial_seed = 6
+        self.board_x_size = 14                  # Initializes the x size of the board (width)
+        self.board_y_size = 14                  # Initializes the y size of the board (height)
+        self.num_initial_seed = 40
         self.board = np.zeros((self.board_y_size, self.board_x_size))
 
         self.num_blanks = self.board_x_size * self.board_y_size
         self.game_status = 0
         self._timer_start_nsecs = 0
+        self.recursive_timer = 0
 
         # Creates a widget object, a vertical box object, and a horizontal box object
         w = QWidget()
@@ -115,9 +116,10 @@ class MainWindow(QMainWindow):
             self.apply_heuristics()
             print(self.board)
 
+            self.recursive_timer = time.time()
             if self.get_solution_to_board() is not None:
                 print("can be solved?")
-            can_be_solved = True
+                can_be_solved = True
             print(positions)
             print(self.board)
 
@@ -125,26 +127,30 @@ class MainWindow(QMainWindow):
 
     def get_solution_to_board(self):
 
-        if not self.is_valid_board():
-            print("Invalid in recursion")
+        if not self.is_valid_board() or time.time() - self.recursive_timer > 5:
             return None
+
+        temp_board = self.board.copy()
 
         for y in range(self.board_y_size):
             for x in range(self.board_x_size):
                 if self.board[y, x] == 0:
+
+                    temp_board = self.board.copy()
                     self.board[y, x] = 1
-                    print(self.board)
+                    self.apply_heuristics()
                     solution = self.get_solution_to_board()
 
                     if solution is None:
+                        self.board = temp_board.copy()
                         self.board[y, x] = -1
-                        print(self.board)
+                        self.apply_heuristics()
                         solution = self.get_solution_to_board()
 
                         if solution is None:
+                            self.board = temp_board.copy()
                             self.board[y, x] = 0
 
-                    self.board[y, x] = 0
                     return solution
 
         return self.board
@@ -261,8 +267,16 @@ class MainWindow(QMainWindow):
         return True
 
     def apply_heuristics(self):
-        self.apply_simple_heuristics()
-        self.apply_number_heuristics()
+
+        # self.apply_simple_heuristics()
+        # self.apply_number_heuristics()
+
+        while True:
+            temp_board = self.board.copy()
+            self.apply_simple_heuristics()
+            self.apply_number_heuristics()
+            if np.array_equal(temp_board, self.board):
+                break
 
         # for y in range(self.board_y_size):
         #     for x in range(self.board_x_size):
@@ -337,8 +351,17 @@ class MainWindow(QMainWindow):
 
     def solve_button_click(self):
 
-        print(self.get_solution_to_board())
-        print("wer")
+        first_time = time.time()
+        self.apply_heuristics()
+        self.recursive_timer = time.time()
+        solution = self.get_solution_to_board()
+        print(time.time() - first_time)
+
+        for y in range(self.board_y_size):
+            for x in range(self.board_x_size):
+                w = self.grid.itemAtPosition(y, x).widget()
+                w.selected_state = solution[y, x]
+                w.update()
 
         counter = 0
         now = time.time()
