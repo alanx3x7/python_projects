@@ -51,7 +51,7 @@ class Cell(QWidget):
             p.setBrush(QBrush(inner, Qt.SolidPattern))
             p.drawEllipse(r)
 
-        elif self.selected_state == 2:
+        elif self.selected_state == -1:
             outer, inner = Qt.black, Qt.black
             pen = QPen(outer, 1, Qt.SolidLine)
             p.setPen(pen)
@@ -64,16 +64,16 @@ class Cell(QWidget):
             if self.selected_state == 0:
                 self.selected_state = 1
             elif self.selected_state == 1:
-                self.selected_state = 2
-            elif self.selected_state == 2:
+                self.selected_state = -1
+            elif self.selected_state == -1:
                 self.selected_state = 0
 
         elif e.button() == Qt.LeftButton:
             if self.selected_state == 0:
-                self.selected_state = 2
+                self.selected_state = -1
             elif self.selected_state == 1:
                 self.selected_state = 0
-            elif self.selected_state == 2:
+            elif self.selected_state == -1:
                 self.selected_state = 1
 
         self.clicked.emit(self.x, self.y, self.selected_state)
