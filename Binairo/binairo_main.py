@@ -26,8 +26,8 @@ class MainWindow(QMainWindow):
         self.title = 'Alan\'s Binairo'          # Name of the window to be opened
         self.setWindowTitle(self.title)         # Sets the name of the window to be the title
 
-        self.board_x_size = 8                  # Initializes the x size of the board (width)
-        self.board_y_size = 8                  # Initializes the y size of the board (height)
+        self.board_x_size = 14                  # Initializes the x size of the board (width)
+        self.board_y_size = 14                  # Initializes the y size of the board (height)
         self.board = np.zeros((self.board_y_size, self.board_x_size))
 
         self.num_blanks = self.board_x_size * self.board_y_size
@@ -222,6 +222,7 @@ class MainWindow(QMainWindow):
 
     def apply_heuristics(self):
         self.apply_simple_heuristics()
+        self.apply_number_heuristics()
 
         for y in range(self.board_y_size):
             for x in range(self.board_x_size):
@@ -233,7 +234,6 @@ class MainWindow(QMainWindow):
 
         for y in range(self.board_y_size):
             for x in range(self.board_x_size):
-                print("(%d, %d)" % (x, y))
                 if self.board[y, x] == 0:
 
                     if x < self.board_x_size - 2:
@@ -260,6 +260,32 @@ class MainWindow(QMainWindow):
                         if self.board[y - 1, x] == self.board[y + 1, x] != 0:
                             self.board[y, x] = -self.board[y + 1, x]
 
+    def apply_number_heuristics(self):
+
+        for y in range(self.board_y_size):
+            num_white = np.count_nonzero(self.board[y, :] == 1)
+            num_black = np.count_nonzero(self.board[y, :] == -1)
+            if num_white == self.board_x_size / 2:
+                for x in range(self.board_x_size):
+                    if self.board[y, x] == 0:
+                        self.board[y, x] = -1
+            elif num_black == self.board_x_size / 2:
+                for x in range(self.board_x_size):
+                    if self.board[y, x] == 0:
+                        self.board[y, x] = 1
+
+        for x in range(self.board_x_size):
+            num_white = np.count_nonzero(self.board[:, x] == 1)
+            num_black = np.count_nonzero(self.board[:, x] == -1)
+            if num_white == self.board_y_size / 2:
+                for y in range(self.board_y_size):
+                    if self.board[y, x] == 0:
+                        self.board[y, x] = -1
+            elif num_black == self.board_y_size / 2:
+                for y in range(self.board_y_size):
+                    if self.board[y, x] == 0:
+                        self.board[y, x] = 1
+
     def cell_clicked(self, x, y, state):
 
         if self.board[y, x] == 0 and state != 0:
@@ -270,10 +296,12 @@ class MainWindow(QMainWindow):
         self.board[y, x] = state
 
         now = time.time()
-        self.is_valid_board()
+        counter = 0
+        while self.is_valid_board() and counter < 10:
+            self.apply_heuristics()
+            counter += 1
         print(time.time() - now)
 
-        self.apply_heuristics()
 
 
 if __name__ == '__main__':
