@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
 
         self.board_x_size = 14                  # Initializes the x size of the board (width)
         self.board_y_size = 14                  # Initializes the y size of the board (height)
-        self.num_initial_seed = 40
+        self.num_initial_seed = int(self.board_x_size * self.board_y_size * 0.23)
         self.board = np.zeros((self.board_y_size, self.board_x_size))
 
         self.num_blanks = self.board_x_size * self.board_y_size
@@ -84,17 +84,21 @@ class MainWindow(QMainWindow):
     def set_up_board(self):
 
         positions = self.create_solvable_board()
+        temp_board = self.board.copy()
+        self.clear_board()
 
         for i in range(len(positions)):
             x, y = positions[i]
             w = self.grid.itemAtPosition(y, x).widget()
-            w.selected_state = self.board[y, x]
+            w.selected_state = temp_board[y, x]
             w.update()
+            self.board[y, x] = temp_board[y, x]
 
     def create_solvable_board(self):
 
         can_be_solved = False
         counter = 0
+        positions = []
 
         while not can_be_solved:
             counter += 1
@@ -129,8 +133,6 @@ class MainWindow(QMainWindow):
 
         if not self.is_valid_board() or time.time() - self.recursive_timer > 5:
             return None
-
-        temp_board = self.board.copy()
 
         for y in range(self.board_y_size):
             for x in range(self.board_x_size):
@@ -268,21 +270,12 @@ class MainWindow(QMainWindow):
 
     def apply_heuristics(self):
 
-        # self.apply_simple_heuristics()
-        # self.apply_number_heuristics()
-
         while True:
             temp_board = self.board.copy()
             self.apply_simple_heuristics()
             self.apply_number_heuristics()
             if np.array_equal(temp_board, self.board):
                 break
-
-        # for y in range(self.board_y_size):
-        #     for x in range(self.board_x_size):
-        #         w = self.grid.itemAtPosition(y, x).widget()
-        #         w.selected_state = self.board[y, x]
-        #         w.update()
 
     def apply_simple_heuristics(self):
 
@@ -352,9 +345,11 @@ class MainWindow(QMainWindow):
     def solve_button_click(self):
 
         first_time = time.time()
+        print(self.board)
         self.apply_heuristics()
         self.recursive_timer = time.time()
         solution = self.get_solution_to_board()
+        print(solution)
         print(time.time() - first_time)
 
         for y in range(self.board_y_size):
