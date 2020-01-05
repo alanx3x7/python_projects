@@ -28,7 +28,8 @@ class Cell(QWidget):
         self.x = x
         self.y = y
         self.selected_state = 0
-        self.real_state = 0
+        self.is_seeded = 0
+        self.is_valid = True
 
     def paintEvent(self, event):
 
@@ -46,14 +47,18 @@ class Cell(QWidget):
 
         elif self.selected_state == 1:
             outer, inner = Qt.black, Qt.white
-            pen = QPen(outer, 1, Qt.SolidLine)
+            if not self.is_valid:
+                outer = Qt.red
+            pen = QPen(outer, 1.5, Qt.SolidLine)
             p.setPen(pen)
             p.setBrush(QBrush(inner, Qt.SolidPattern))
             p.drawEllipse(r)
 
         elif self.selected_state == -1:
             outer, inner = Qt.black, Qt.black
-            pen = QPen(outer, 1, Qt.SolidLine)
+            if not self.is_valid:
+                outer = Qt.red
+            pen = QPen(outer, 1.5, Qt.SolidLine)
             p.setPen(pen)
             p.setBrush(QBrush(inner, Qt.SolidPattern))
             p.drawEllipse(r)

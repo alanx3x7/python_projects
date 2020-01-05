@@ -34,7 +34,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Binairo/binairo_main.py" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
   </component>
   <component name="RunManager" selected="Python.binairo">
     <configuration name="binairo" type="PythonConfigurationType" factoryName="Python">
@@ -173,21 +173,25 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1259" height="54" key="GridCell.Tab.0.bottom" timestamp="1578207005374">
+    <state width="1259" height="93" key="GridCell.Tab.0.bottom" timestamp="1578235416277">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state width="1259" height="54" key="GridCell.Tab.0.bottom/0.31.1280.689@0.31.1280.689" timestamp="1578207005374" />
-    <state width="1259" height="54" key="GridCell.Tab.0.center" timestamp="1578207005374">
+    <state width="1259" height="93" key="GridCell.Tab.0.bottom/0.31.1280.689@0.31.1280.689" timestamp="1578235416277" />
+    <state width="1259" height="93" key="GridCell.Tab.0.center" timestamp="1578235416276">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state width="1259" height="54" key="GridCell.Tab.0.center/0.31.1280.689@0.31.1280.689" timestamp="1578207005374" />
-    <state width="1259" height="54" key="GridCell.Tab.0.left" timestamp="1578207005374">
+    <state width="1259" height="93" key="GridCell.Tab.0.center/0.31.1280.689@0.31.1280.689" timestamp="1578235416276" />
+    <state width="1259" height="93" key="GridCell.Tab.0.left" timestamp="1578235416275">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state width="1259" height="54" key="GridCell.Tab.0.left/0.31.1280.689@0.31.1280.689" timestamp="1578207005374" />
-    <state width="1259" height="54" key="GridCell.Tab.0.right" timestamp="1578207005374">
+    <state width="1259" height="93" key="GridCell.Tab.0.left/0.31.1280.689@0.31.1280.689" timestamp="1578235416275" />
+    <state width="1259" height="93" key="GridCell.Tab.0.right" timestamp="1578235416276">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state width="1259" height="54" key="GridCell.Tab.0.right/0.31.1280.689@0.31.1280.689" timestamp="1578207005374" />
+    <state width="1259" height="93" key="GridCell.Tab.0.right/0.31.1280.689@0.31.1280.689" timestamp="1578235416276" />
+    <state x="142" y="30" key="SettingsEditor" timestamp="1578209958031">
+      <screen x="0" y="31" width="1280" height="689" />
+    </state>
+    <state x="142" y="30" key="SettingsEditor/0.31.1280.689@0.31.1280.689" timestamp="1578209958031" />
   </component>
 </project>

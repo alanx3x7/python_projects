@@ -11,7 +11,6 @@ import time
 import numpy as np
 
 # PyQt5 specific imports
-from PyQt5 import QtTest
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -28,9 +27,10 @@ class MainWindow(QMainWindow):
         self.title = 'Alan\'s Binairo'          # Name of the window to be opened
         self.setWindowTitle(self.title)         # Sets the name of the window to be the title
 
-        self.board_x_size = 14                  # Initializes the x size of the board (width)
-        self.board_y_size = 14                  # Initializes the y size of the board (height)
+        self.board_x_size = 6                  # Initializes the x size of the board (width)
+        self.board_y_size = 6                  # Initializes the y size of the board (height)
         self.num_initial_seed = int(self.board_x_size * self.board_y_size * 0.23)
+        self.num_added_per_hint = 3
         self.board = np.zeros((self.board_y_size, self.board_x_size))
 
         self.num_blanks = self.board_x_size * self.board_y_size
@@ -41,32 +41,42 @@ class MainWindow(QMainWindow):
         # Creates a widget object, a vertical box object, and a horizontal box object
         w = QWidget()
         vb = QVBoxLayout()
-        hb = QHBoxLayout()
+        hb_top = QHBoxLayout()
+        hb_bottom = QHBoxLayout()
 
         # Create a button to reset the board
         self.reset_button = QPushButton("Reset", self)
         self.reset_button.setFixedSize(QSize(64, 32))
         self.reset_button.pressed.connect(self.reset_button_click)
-        hb.addWidget(self.reset_button, 0, Qt.Alignment())
+        hb_top.addWidget(self.reset_button, 0, Qt.Alignment())
 
         # Create a status label
         self.game_state_label = QLabel()
         self.game_state_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         f = self.game_state_label.font()  # Sets the font
-        f.setPointSize(20)
+        f.setPointSize(10)
         f.setWeight(75)
         self.game_state_label.setFont(f)
         self.game_state_label.setText("Generating puzzle")
-        hb.addWidget(self.game_state_label, 0, Qt.Alignment())  # Adds the status label to the horizontal box
+        hb_top.addWidget(self.game_state_label, 0, Qt.Alignment())  # Adds the status label to the horizontal box
 
         # Create a button to solve the board
         self.solve_button = QPushButton("Solve", self)
         self.solve_button.setFixedSize(QSize(64, 32))
         self.solve_button.pressed.connect(self.solve_button_click)  # Links the click to self.button_click function
-        hb.addWidget(self.solve_button, 0, Qt.Alignment())  # Adds the button to the horizontal box
+        hb_top.addWidget(self.solve_button, 0, Qt.Alignment())  # Adds the button to the horizontal box
 
         # Add the horizontal box to the vertical box
-        vb.addLayout(hb)
+        vb.addLayout(hb_top)
+
+        # Create a button to make it easier
+        self.hint_button = QPushButton("Hint", self)
+        self.hint_button.setFixedSize(QSize(64, 32))
+        self.hint_button.pressed.connect(self.hint_button_click)
+        hb_bottom.addWidget(self.hint_button, 0, Qt.Alignment())
+
+        # Add the bottom horizontal box to the vertical box
+        vb.addLayout(hb_bottom)
 
         # Create a grid layout to hold all of the cell objects for each cell
         self.grid = QGridLayout()
@@ -122,7 +132,7 @@ class MainWindow(QMainWindow):
 
         while not can_be_solved:
             counter += 1
-            print(counter)
+            print("Generating board trial %d" % counter)
 
             positions = []
             self.clear_board()
@@ -137,15 +147,9 @@ class MainWindow(QMainWindow):
                     else:
                         positions.append((x, y))
 
-            self.apply_heuristics()
-            print(self.board)
-
             self.recursive_timer = time.time()
             if self.get_solution_to_board() is not None:
-                print("can be solved?")
                 can_be_solved = True
-            print(positions)
-            print(self.board)
 
         return positions
 
@@ -362,6 +366,18 @@ class MainWindow(QMainWindow):
 
         self.board[y, x] = state
 
+        w = self.grid.itemAtPosition(y, x).widget()
+        if not self.is_valid_board():
+            w.is_valid = False
+            w.update()
+        else:
+            w.is_valid = True
+            w.update()
+
+        num_blanks_remaining = self.board_x_size * self.board_y_size - np.count_nonzero(self.board)
+        if num_blanks_remaining == 0 and self.is_valid_board():
+            self.game_state_label.setText("Hooray!")
+
     def solve_button_click(self):
 
         self.game_state_label.setText("Solving")
@@ -384,14 +400,34 @@ class MainWindow(QMainWindow):
     def reset_button_click(self):
 
         self.game_state_label.setText("Generating puzzle")
-        QApplication.processEvents()
         for y in range(self.board_y_size):
             for x in range(self.board_x_size):
                 self.grid.itemAtPosition(y, x).widget().reset_cell()
 
+        QApplication.processEvents()
+
         self.clear_board()
         self.set_up_board()
         self.game_state_label.setText("Play!")
+
+    def hint_button_click(self):
+        self.recursive_timer = time.time()
+        temp_board = self.board.copy()
+        num_blanks_remaining = self.board_x_size * self.board_y_size - np.count_nonzero(temp_board)
+        solution = self.get_solution_to_board()
+
+        positions = []
+        while len(positions) < min(num_blanks_remaining, self.num_added_per_hint):
+            x = random.randint(0, self.board_x_size - 1)
+            y = random.randint(0, self.board_y_size - 1)
+            if temp_board[y, x] == 0:
+                temp_board[y, x] = solution[y, x]
+                w = self.grid.itemAtPosition(y, x).widget()
+                w.selected_state = solution[y, x]
+                w.update()
+                positions.append((x, y))
+
+        self.board = temp_board
 
 
 if __name__ == '__main__':
