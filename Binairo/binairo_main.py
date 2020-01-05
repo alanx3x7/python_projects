@@ -27,8 +27,8 @@ class MainWindow(QMainWindow):
         self.title = 'Alan\'s Binairo'          # Name of the window to be opened
         self.setWindowTitle(self.title)         # Sets the name of the window to be the title
 
-        self.board_x_size = 6                  # Initializes the x size of the board (width)
-        self.board_y_size = 6                  # Initializes the y size of the board (height)
+        self.board_x_size = 14                  # Initializes the x size of the board (width)
+        self.board_y_size = 14                  # Initializes the y size of the board (height)
         self.num_initial_seed = int(self.board_x_size * self.board_y_size * 0.23)
         self.num_added_per_hint = 3
         self.board = np.zeros((self.board_y_size, self.board_x_size))
@@ -423,17 +423,18 @@ class MainWindow(QMainWindow):
         num_blanks_remaining = self.board_x_size * self.board_y_size - np.count_nonzero(temp_board)
         solution = self.get_solution_to_board()
 
-        positions = []
-        while len(positions) < min(num_blanks_remaining, self.num_added_per_hint):
-            x = random.randint(0, self.board_x_size - 1)
-            y = random.randint(0, self.board_y_size - 1)
-            if temp_board[y, x] == 0:
-                temp_board[y, x] = solution[y, x]
-                w = self.grid.itemAtPosition(y, x).widget()
-                w.selected_state = solution[y, x]
-                w.is_seeded = True
-                w.update()
-                positions.append((x, y))
+        if solution is not None:
+            positions = []
+            while len(positions) < min(num_blanks_remaining, self.num_added_per_hint):
+                x = random.randint(0, self.board_x_size - 1)
+                y = random.randint(0, self.board_y_size - 1)
+                if temp_board[y, x] == 0:
+                    temp_board[y, x] = solution[y, x]
+                    w = self.grid.itemAtPosition(y, x).widget()
+                    w.selected_state = solution[y, x]
+                    w.is_seeded = True
+                    w.update()
+                    positions.append((x, y))
 
         self.board = temp_board
 
