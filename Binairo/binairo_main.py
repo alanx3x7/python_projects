@@ -378,6 +378,11 @@ class MainWindow(QMainWindow):
         num_blanks_remaining = self.board_x_size * self.board_y_size - np.count_nonzero(self.board)
         if num_blanks_remaining == 0 and self.is_valid_board():
             self.game_state_label.setText("Hooray!")
+            for y in range(self.board_y_size):
+                for x in range(self.board_x_size):
+                    w = self.grid.itemAtPosition(y, x).widget()
+                    w.is_seeded = True
+                    w.update()
 
     def solve_button_click(self):
 
@@ -395,6 +400,7 @@ class MainWindow(QMainWindow):
                 for x in range(self.board_x_size):
                     w = self.grid.itemAtPosition(y, x).widget()
                     w.selected_state = solution[y, x]
+                    w.is_seeded = True
                     w.update()
             self.game_state_label.setText("Solution")
 
@@ -425,6 +431,7 @@ class MainWindow(QMainWindow):
                 temp_board[y, x] = solution[y, x]
                 w = self.grid.itemAtPosition(y, x).widget()
                 w.selected_state = solution[y, x]
+                w.is_seeded = True
                 w.update()
                 positions.append((x, y))
 
