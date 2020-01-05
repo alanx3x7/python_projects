@@ -121,6 +121,7 @@ class MainWindow(QMainWindow):
             x, y = positions[i]
             w = self.grid.itemAtPosition(y, x).widget()
             w.selected_state = temp_board[y, x]
+            w.is_seeded = True
             w.update()
             self.board[y, x] = temp_board[y, x]
 
