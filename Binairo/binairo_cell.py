@@ -78,3 +78,7 @@ class Cell(QWidget):
 
         self.clicked.emit(self.x, self.y, self.selected_state)
         self.update()
+
+    def reset_cell(self):
+        self.selected_state = 0
+        self.update()

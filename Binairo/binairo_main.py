@@ -11,8 +11,10 @@ import time
 import numpy as np
 
 # PyQt5 specific imports
+from PyQt5 import QtTest
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 
 # Importing the class file for the individual cells
 from binairo_cell import Cell
@@ -41,6 +43,22 @@ class MainWindow(QMainWindow):
         vb = QVBoxLayout()
         hb = QHBoxLayout()
 
+        # Create a button to reset the board
+        self.reset_button = QPushButton("Reset", self)
+        self.reset_button.setFixedSize(QSize(64, 32))
+        self.reset_button.pressed.connect(self.reset_button_click)
+        hb.addWidget(self.reset_button, 0, Qt.Alignment())
+
+        # Create a status label
+        self.game_state_label = QLabel()
+        self.game_state_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        f = self.game_state_label.font()  # Sets the font
+        f.setPointSize(20)
+        f.setWeight(75)
+        self.game_state_label.setFont(f)
+        self.game_state_label.setText("Generating puzzle")
+        hb.addWidget(self.game_state_label, 0, Qt.Alignment())  # Adds the status label to the horizontal box
+
         # Create a button to solve the board
         self.solve_button = QPushButton("Solve", self)
         self.solve_button.setFixedSize(QSize(64, 32))
@@ -61,7 +79,9 @@ class MainWindow(QMainWindow):
 
         # Initializes grid with cell objects and sets up the minefield
         self.init_map()
+        self.show()
         self.set_up_board()
+        self.game_state_label.setText("Play!")
 
         # Displays the window
         self.show()
@@ -344,28 +364,34 @@ class MainWindow(QMainWindow):
 
     def solve_button_click(self):
 
+        self.game_state_label.setText("Solving")
+        QApplication.processEvents()
         first_time = time.time()
-        print(self.board)
-        self.apply_heuristics()
         self.recursive_timer = time.time()
         solution = self.get_solution_to_board()
-        print(solution)
-        print(time.time() - first_time)
+        print("Time taken to solve: %07.3f seconds" % (time.time() - first_time))
 
+        if solution is None:
+            self.game_state_label.setText("Cannot be solved")
+        else:
+            for y in range(self.board_y_size):
+                for x in range(self.board_x_size):
+                    w = self.grid.itemAtPosition(y, x).widget()
+                    w.selected_state = solution[y, x]
+                    w.update()
+            self.game_state_label.setText("Solution")
+
+    def reset_button_click(self):
+
+        self.game_state_label.setText("Generating puzzle")
+        QApplication.processEvents()
         for y in range(self.board_y_size):
             for x in range(self.board_x_size):
-                w = self.grid.itemAtPosition(y, x).widget()
-                w.selected_state = solution[y, x]
-                w.update()
+                self.grid.itemAtPosition(y, x).widget().reset_cell()
 
-        counter = 0
-        now = time.time()
-        while self.is_valid_board() and counter < 10:
-            self.apply_heuristics()
-            counter += 1
-        if not self.is_valid_board():
-            print("Cannot be solved!")
-        print(time.time() - now)
+        self.clear_board()
+        self.set_up_board()
+        self.game_state_label.setText("Play!")
 
 
 if __name__ == '__main__':
