@@ -24,7 +24,8 @@ class EditWindow(QMainWindow):
 
         self.board_x_size = 10
         self.board_y_size = 10
-        self.num_cells_start = int(self.board_x_size * self.board_y_size * 0.38)
+        self.default_diff = 0.38
+        self.num_cells_start = int(self.board_x_size * self.board_y_size * self.default_diff)
         self.num_added_hint = 3
 
         # Creates a widget object, a vertical box object, and a horizontal box object
@@ -65,6 +66,12 @@ class EditWindow(QMainWindow):
         self.reset_button.clicked.connect(self.reset_button_click)
         hb_bottom.addWidget(self.reset_button, 0, Qt.Alignment())
 
+        # Create a button to solve the board
+        self.save_button = QPushButton("Save", self)
+        self.save_button.setFixedSize(QSize(64, 32))
+        self.save_button.clicked.connect(self.save_button_click)
+        hb_bottom.addWidget(self.save_button, 0, Qt.Alignment())  # Adds the button to the horizontal box
+
         # Create a status label
         self.game_state_label = QLabel()
         self.game_state_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
@@ -72,14 +79,8 @@ class EditWindow(QMainWindow):
         f.setPointSize(10)
         f.setWeight(75)
         self.game_state_label.setFont(f)
-        self.game_state_label.setText("Generating puzzle")
-        hb_bottom.addWidget(self.game_state_label, 0, Qt.Alignment())  # Adds the status label to the horizontal box
-
-        # Create a button to solve the board
-        self.save_button = QPushButton("Save", self)
-        self.save_button.setFixedSize(QSize(64, 32))
-        self.save_button.clicked.connect(self.save_button_click)
-        hb_bottom.addWidget(self.save_button, 0, Qt.Alignment())  # Adds the button to the horizontal box
+        self.game_state_label.setText("Edit Settings")
+        vb_main.addWidget(self.game_state_label, 0, Qt.Alignment())  # Adds the status label to the horizontal box
 
         # Add the horizontal box to the vertical box
         vb_main.addLayout(hb_top)
@@ -99,9 +100,10 @@ class EditWindow(QMainWindow):
         if radio_button.isChecked():
             self.board_x_size = radio_button.size
             self.board_y_size = radio_button.size
-            self.num_cells_start = int(self.board_x_size * self.board_y_size * 0.23)
+            self.num_cells_start = int(self.board_x_size * self.board_y_size * self.default_diff)
 
     def difficulty_selected(self):
         radio_button = self.sender()
         if radio_button.isChecked():
-            self.num_cells_start = int(self.board_x_size * self.board_y_size * radio_button.seed)
+            self.default_diff = radio_button.seed
+            self.num_cells_start = int(self.board_x_size * self.board_y_size * self.default_diff)
