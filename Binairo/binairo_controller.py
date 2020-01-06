@@ -1,6 +1,7 @@
 
 from binairo_edit_window import EditWindow
 from binairo_main_window import MainWindow
+from PyQt5.QtWidgets import *
 
 
 class Controller:

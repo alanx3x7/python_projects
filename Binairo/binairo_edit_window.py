@@ -29,7 +29,8 @@ class EditWindow(QMainWindow):
         # Create radio buttons
         for i in range(8):
             radio_button = QRadioButton("%d x %d" % (i * 2 + 4, i * 2 + 4))
-            if i == 0: radio_button.setChecked(True)
+            if i == 0:
+                radio_button.setChecked(True)
             radio_button.size = i * 2 + 4
             radio_button.toggled.connect(self.radio_selected)
             vb_radio.addWidget(radio_button)
@@ -37,7 +38,7 @@ class EditWindow(QMainWindow):
         # Create a button to reset the board
         self.reset_button = QPushButton("Back", self)
         self.reset_button.setFixedSize(QSize(64, 32))
-        self.reset_button.pressed.connect(self.reset_button_click)
+        self.reset_button.clicked.connect(self.reset_button_click)
         hb_bottom.addWidget(self.reset_button, 0, Qt.Alignment())
 
         # Create a status label
@@ -53,7 +54,7 @@ class EditWindow(QMainWindow):
         # Create a button to solve the board
         self.save_button = QPushButton("Save", self)
         self.save_button.setFixedSize(QSize(64, 32))
-        self.save_button.pressed.connect(self.save_button_click)
+        self.save_button.clicked.connect(self.save_button_click)
         hb_bottom.addWidget(self.save_button, 0, Qt.Alignment())  # Adds the button to the horizontal box
 
         # Add the horizontal box to the vertical box

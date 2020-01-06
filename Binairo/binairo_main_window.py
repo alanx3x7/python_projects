@@ -24,8 +24,6 @@ class MainWindow(QMainWindow):
 
     def __init__(self, x_board_size, y_board_size, num_cells_start, num_per_hint, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        print("hello")
         self.title = 'Alan\'s Binairo'          # Name of the window to be opened
         self.setWindowTitle(self.title)         # Sets the name of the window to be the title
 
@@ -93,7 +91,7 @@ class MainWindow(QMainWindow):
         # Create a board size label
         self.change_button = QPushButton("Change", self)
         self.change_button.setFixedSize(QSize(64, 32))
-        self.change_button.pressed.connect(self.change_button_click)
+        self.change_button.clicked.connect(self.change_button_click)
         hb_bottom.addWidget(self.change_button, 0, Qt.Alignment())
 
         # Add the bottom horizontal box to the vertical box
