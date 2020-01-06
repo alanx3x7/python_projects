@@ -75,6 +75,25 @@ class MainWindow(QMainWindow):
         self.hint_button.pressed.connect(self.hint_button_click)
         hb_bottom.addWidget(self.hint_button, 0, Qt.Alignment())
 
+        # Create the clock label (timer)
+        self.clock = QLabel()
+        self.clock.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.clock.setFont(f)
+        self.clock.setText("Time: 000.000")
+        hb_bottom.addWidget(self.clock, 0, Qt.Alignment())  # Adds the clock label to the horizontal box
+
+        # Create the timer object to keep track of time
+        self._timer = QTimer()
+        self._timer.timeout.connect(self.update_timer)  # Connects the timer to self.update_timer
+        self._timer.start(10)  # 1 second timer                 # Updates and calls self.update_timer every 10 ms
+        self._timer_start_nsecs = 0
+
+        # Create a board size label
+        self.change_button = QPushButton()
+        self.change_button.setFixedSize(QSize(64, 32))
+        self.change_button.pressed.connect(self.change_button_click)
+        hb_bottom.addWidget(self.change_button, 0, Qt.Alignment())
+
         # Add the bottom horizontal box to the vertical box
         vb.addLayout(hb_bottom)
 
@@ -92,6 +111,8 @@ class MainWindow(QMainWindow):
         self.show()
         self.set_up_board()
         self.game_state_label.setText("Play!")
+        self.game_status = 1
+        self._timer_start_nsecs = time.time()
 
         # Displays the window
         self.show()
@@ -406,6 +427,7 @@ class MainWindow(QMainWindow):
 
     def reset_button_click(self):
 
+        self.game_status = 0
         self.game_state_label.setText("Generating puzzle")
         for y in range(self.board_y_size):
             for x in range(self.board_x_size):
@@ -416,8 +438,15 @@ class MainWindow(QMainWindow):
         self.clear_board()
         self.set_up_board()
         self.game_state_label.setText("Play!")
+        self._timer_start_nsecs = time.time()
+        self.game_status = 1
 
     def hint_button_click(self):
+
+        self.game_status = 0                    # Pause the game so that the timer does not keep counting
+        self.game_state_label.setText("Generating Hint")
+        QApplication.processEvents()
+
         self.recursive_timer = time.time()
         temp_board = self.board.copy()
         num_blanks_remaining = self.board_x_size * self.board_y_size - np.count_nonzero(temp_board)
@@ -437,6 +466,22 @@ class MainWindow(QMainWindow):
                     positions.append((x, y))
 
         self.board = temp_board
+        self.game_state_label.setText("Play!")
+        self.game_status = 1
+        self._timer_start_nsecs += time.time() - self.recursive_timer
+
+    def change_button_click(self):
+        print("Hi")
+
+    def update_timer(self):
+        """ Called at the predetermined rate to update the timer label regularly
+        """
+
+        if self.game_status == 1:  # Only update timer when game is being played
+            n_secs = time.time() - self._timer_start_nsecs  # Finds the time passed since the game started
+            self.clock.setText("Time: %07.3f" % n_secs)  # Updates the timer label to display time elapsed
+        else:
+            self._timer_start_nsecs += 0.01
 
 
 if __name__ == '__main__':

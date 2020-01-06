@@ -205,7 +205,7 @@ class MainWindow(QMainWindow):
                 self.button_click()
                 t = self.grid.itemAtPosition(y, x).widget()
 
-            self._timer_start_nsecs = int(time.time())          # Sets the game start time as now
+            self._timer_start_nsecs = time.time()               # Sets the game start time as now
             self.first_already_clicked = True                   # Marks the fact that the first click has occurred
             self.game_status = 1                                # Sets game status to playing
             t.click()                                           # Clicks on the current cell
