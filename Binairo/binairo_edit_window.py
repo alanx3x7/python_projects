@@ -11,6 +11,7 @@ class EditWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        print("hi")
         self.title = 'Alan\'s Binairo'          # Name of the window to be opened
         self.setWindowTitle(self.title)         # Sets the name of the window to be the title
 
@@ -49,3 +50,6 @@ class EditWindow(QMainWindow):
 
     def reset_button_click(self):
         self.switch_window.emit()
+
+
+# int(self.board_x_size * self.board_y_size * 0.23)

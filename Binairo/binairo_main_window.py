@@ -23,16 +23,17 @@ class MainWindow(QMainWindow):
 
     switch_window = pyqtSignal()
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, x_board_size, y_board_size, num_cells_start, num_per_hint, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        print("hello")
         self.title = 'Alan\'s Binairo'          # Name of the window to be opened
         self.setWindowTitle(self.title)         # Sets the name of the window to be the title
 
-        self.board_x_size = 14                  # Initializes the x size of the board (width)
-        self.board_y_size = 14                  # Initializes the y size of the board (height)
-        self.num_initial_seed = int(self.board_x_size * self.board_y_size * 0.23)
-        self.num_added_per_hint = 3
+        self.board_x_size = x_board_size                  # Initializes the x size of the board (width)
+        self.board_y_size = y_board_size                  # Initializes the y size of the board (height)
+        self.num_initial_seed = num_cells_start
+        self.num_added_per_hint = num_per_hint
         self.board = np.zeros((self.board_y_size, self.board_x_size))
 
         self.num_blanks = self.board_x_size * self.board_y_size
