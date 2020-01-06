@@ -399,6 +399,7 @@ class MainWindow(QMainWindow):
         num_blanks_remaining = self.board_x_size * self.board_y_size - np.count_nonzero(self.board)
         if num_blanks_remaining == 0 and self.is_valid_board():
             self.game_state_label.setText("Hooray!")
+            self.game_status = 0
             for y in range(self.board_y_size):
                 for x in range(self.board_x_size):
                     w = self.grid.itemAtPosition(y, x).widget()
@@ -408,6 +409,7 @@ class MainWindow(QMainWindow):
     def solve_button_click(self):
 
         self.game_state_label.setText("Solving")
+        self.game_status = 0
         QApplication.processEvents()
         first_time = time.time()
         self.recursive_timer = time.time()
@@ -466,9 +468,12 @@ class MainWindow(QMainWindow):
                     positions.append((x, y))
 
         self.board = temp_board
-        self.game_state_label.setText("Play!")
-        self.game_status = 1
-        self._timer_start_nsecs += time.time() - self.recursive_timer
+        if num_blanks_remaining <= self.num_added_per_hint:
+            self.game_state_label.setText("Solution")
+        else:
+            self.game_state_label.setText("Play!")
+            self.game_status = 1
+            self._timer_start_nsecs += time.time() - self.recursive_timer
 
     def change_button_click(self):
         print("Hi")
