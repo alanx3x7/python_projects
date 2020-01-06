@@ -21,6 +21,8 @@ from binairo_cell import Cell
 
 class MainWindow(QMainWindow):
 
+    switch_window = pyqtSignal()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -483,9 +485,7 @@ class MainWindow(QMainWindow):
             self._timer_start_nsecs += time.time() - self.recursive_timer
 
     def change_button_click(self):
-        print("Hi")
-        self.setCentralWidget(self.second_window)
-        self.show()
+        self.switch_window.emit()
 
     def update_timer(self):
         """ Called at the predetermined rate to update the timer label regularly

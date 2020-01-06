@@ -6,6 +6,8 @@ from PyQt5.QtGui import *
 
 class EditWindow(QMainWindow):
 
+    switch_window = pyqtSignal()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -37,8 +39,13 @@ class EditWindow(QMainWindow):
         # Create a button to solve the board
         self.solve_button = QPushButton("Solve", self)
         self.solve_button.setFixedSize(QSize(64, 32))
-        self.solve_button.pressed.connect(self.solve_button_click)  # Links the click to self.button_click function
         hb_top.addWidget(self.solve_button, 0, Qt.Alignment())  # Adds the button to the horizontal box
 
         # Add the horizontal box to the vertical box
         vb.addLayout(hb_top)
+
+        self.first_window.setLayout(vb)
+        self.setCentralWidget(self.first_window)
+
+    def reset_button_click(self):
+        self.switch_window.emit()
