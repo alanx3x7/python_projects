@@ -29,7 +29,8 @@ class MainWindow(QMainWindow):
 
         self.board_x_size = x_board_size                  # Initializes the x size of the board (width)
         self.board_y_size = y_board_size                  # Initializes the y size of the board (height)
-        self.num_initial_seed = num_cells_start
+        self.num_initial_seed = int(self.board_x_size * self.board_y_size * 0.23)
+        self.num_cells_start = max(num_cells_start, self.num_initial_seed)
         self.num_added_per_hint = num_per_hint
         self.board = np.zeros((self.board_y_size, self.board_x_size))
 
@@ -154,6 +155,7 @@ class MainWindow(QMainWindow):
         can_be_solved = False
         counter = 0
         positions = []
+        solution = None
 
         while not can_be_solved:
             counter += 1
@@ -173,8 +175,15 @@ class MainWindow(QMainWindow):
                         positions.append((x, y))
 
             self.recursive_timer = time.time()
-            if self.get_solution_to_board() is not None:
+            solution = self.get_solution_to_board()
+            if solution is not None:
                 can_be_solved = True
+
+        while len(positions) < self.num_cells_start:
+            x = random.randint(0, self.board_x_size - 1)
+            y = random.randint(0, self.board_y_size - 1)
+            if (x, y) not in positions:
+                positions.append((x, y))
 
         return positions
 
