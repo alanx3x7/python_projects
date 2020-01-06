@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
         self.recursive_timer = 0
 
         # Creates a widget object, a vertical box object, and a horizontal box object
-        w = QWidget()
+        self.first_window = QWidget()
         vb = QVBoxLayout()
         hb_top = QHBoxLayout()
         hb_bottom = QHBoxLayout()
@@ -89,7 +89,7 @@ class MainWindow(QMainWindow):
         self._timer_start_nsecs = 0
 
         # Create a board size label
-        self.change_button = QPushButton()
+        self.change_button = QPushButton("Change", self)
         self.change_button.setFixedSize(QSize(64, 32))
         self.change_button.pressed.connect(self.change_button_click)
         hb_bottom.addWidget(self.change_button, 0, Qt.Alignment())
@@ -103,8 +103,8 @@ class MainWindow(QMainWindow):
         vb.addLayout(self.grid)  # Adds the grid to the vertical box
 
         # Sets the layout of the widget to be the vertical box and centers it
-        w.setLayout(vb)
-        self.setCentralWidget(w)
+        self.first_window.setLayout(vb)
+        self.setCentralWidget(self.first_window)
 
         # Initializes grid with cell objects and sets up the minefield
         self.init_map()
@@ -116,6 +116,13 @@ class MainWindow(QMainWindow):
 
         # Displays the window
         self.show()
+
+        # Create the second window
+        self.second_window = QWidget()
+        hb2 = QHBoxLayout()
+        self.new_button = QPushButton()
+        self.new_button.setFixedSize(QSize(64, 32))
+        hb2.addWidget(self.new_button, 0, Qt.Alignment())
 
     def init_map(self):
 
@@ -477,6 +484,8 @@ class MainWindow(QMainWindow):
 
     def change_button_click(self):
         print("Hi")
+        self.setCentralWidget(self.second_window)
+        self.show()
 
     def update_timer(self):
         """ Called at the predetermined rate to update the timer label regularly
