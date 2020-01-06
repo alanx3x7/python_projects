@@ -5,7 +5,6 @@
 # Last Updated: 2020/01/03
 
 # Typical imports
-import sys
 import random
 import time
 import numpy as np
@@ -112,6 +111,9 @@ class MainWindow(QMainWindow):
         # Initializes grid with cell objects and sets up the minefield
         self.init_map()
         self.show()
+
+        QApplication.processEvents()
+
         self.set_up_board()
         self.game_state_label.setText("Play!")
         self.game_status = 1
@@ -119,13 +121,6 @@ class MainWindow(QMainWindow):
 
         # Displays the window
         self.show()
-
-        # Create the second window
-        self.second_window = QWidget()
-        hb2 = QHBoxLayout()
-        self.new_button = QPushButton()
-        self.new_button.setFixedSize(QSize(64, 32))
-        hb2.addWidget(self.new_button, 0, Qt.Alignment())
 
     def init_map(self):
 
@@ -497,9 +492,3 @@ class MainWindow(QMainWindow):
             self.clock.setText("Time: %07.3f" % n_secs)  # Updates the timer label to display time elapsed
         else:
             self._timer_start_nsecs += 0.01
-
-
-if __name__ == '__main__':
-    app = QApplication([])
-    window = MainWindow()
-    sys.exit(app.exec_())

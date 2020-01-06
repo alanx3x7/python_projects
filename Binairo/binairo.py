@@ -6,5 +6,5 @@ from PyQt5.QtWidgets import *
 if __name__ == '__main__':
     app = QApplication([])
     controller = Controller()
-    controller.show_main_window()
+    controller.begin()
     sys.exit(app.exec_())
