@@ -37,7 +37,6 @@
 **
 ****************************************************************************/
 
-import QtQml 2.14 as Qml
 import QtQuick 2.2
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Private 1.0
@@ -171,12 +170,11 @@ FocusScope {
             focus: true
             enabled: modelData.enabled
 
-            Qml.Binding {
+            Binding {
                 target: tabbar
                 when: selected
                 property: "__selectedTabRect"
                 value: Qt.rect(x, y, width, height)
-                restoreMode: Binding.RestoreBinding
             }
 
             drag.target: tabsMovable ? tabloader : null

@@ -62,7 +62,7 @@ Rectangle {
         radius: width / 2
         color: "transparent"
         border.color: Fusion.topShadow
-        visible: indicator.control.enabled && !indicator.control.down
+        visible: control.enabled && !control.down
     }
 
     Rectangle {
@@ -73,6 +73,6 @@ Rectangle {
         radius: width / 2
         color: Color.transparent(indicator.checkMarkColor, 180 / 255)
         border.color: Color.transparent(indicator.checkMarkColor, 200 / 255)
-        visible: indicator.control.checked
+        visible: control.checked
     }
 }

@@ -123,7 +123,8 @@ Item {
     SourceProxy {
         id: sourceProxy
         input: rootItem.source
-        interpolation: input && input.smooth ? SourceProxy.LinearInterpolation : SourceProxy.NearestInterpolation
+        interpolation: rootItem.smooth || (rootItem.layer.enabled && rootItem.layer.smooth)
+            ? SourceProxy.NearestInterpolation :  SourceProxy.LinearInterpolation
     }
 
     ShaderEffectSource {

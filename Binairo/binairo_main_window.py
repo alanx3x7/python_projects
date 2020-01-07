@@ -2,7 +2,7 @@
 # Author: Alan Lai
 # Email: alan_lai@jhu.edu
 # Version: 1.0
-# Last Updated: 2020/01/03
+# Last Updated: 2020/01/07
 
 # Typical imports
 import random
@@ -19,37 +19,46 @@ from binairo_cell import Cell
 
 
 class MainWindow(QMainWindow):
+    """ Main class window for the binairo game
+    """
 
+    # Signal when the button to edit board size and difficulty is pressed
     switch_window = pyqtSignal()
 
     def __init__(self, x_board_size, y_board_size, num_cells_start, num_per_hint, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.title = 'Alan\'s Binairo'          # Name of the window to be opened
-        self.setWindowTitle(self.title)         # Sets the name of the window to be the title
 
-        self.board_x_size = x_board_size                  # Initializes the x size of the board (width)
-        self.board_y_size = y_board_size                  # Initializes the y size of the board (height)
+        self.title = 'Alan\'s Binairo'              # Name of the window to be opened
+        self.setWindowTitle(self.title)             # Sets the name of the window to be the title
+
+        self.board_x_size = x_board_size            # Initializes the x size of the board (width)
+        self.board_y_size = y_board_size            # Initializes the y size of the board (height)
+
+        # Works out the optimal number of cells to seed as 23% (determined experimentally)
         self.num_initial_seed = int(self.board_x_size * self.board_y_size * 0.23)
-        self.num_cells_start = max(num_cells_start, self.num_initial_seed)
-        self.num_added_per_hint = num_per_hint
-        self.board = np.zeros((self.board_y_size, self.board_x_size))
+        self.num_cells_start = max(num_cells_start, self.num_initial_seed)          # Number of starting by difficulty
+        self.num_added_per_hint = num_per_hint      # Number of cells added per hint button press
 
+        # Creates a board as a numpy 2D array of ints, and creates variable to keep track of number of blanks
+        self.board = np.zeros((self.board_y_size, self.board_x_size))
         self.num_blanks = self.board_x_size * self.board_y_size
-        self.game_status = 0
-        self._timer_start_nsecs = 0
-        self.recursive_timer = 0
+
+        # Sets up game variables
+        self.game_status = 0                        # 0 if not playing, 1 if playing
+        self._timer_start_nsecs = 0                 # Timer displayed to user
+        self.recursive_timer = 0                    # Timer to prevent recursion from taking too long
 
         # Creates a widget object, a vertical box object, and a horizontal box object
-        self.first_window = QWidget()
-        vb = QVBoxLayout()
-        hb_top = QHBoxLayout()
-        hb_bottom = QHBoxLayout()
+        self.first_window = QWidget(*args, **kwargs)
+        vb = QVBoxLayout()                          # Main box that the layout will be set to
+        hb_top = QHBoxLayout()                      # Top box holding the reset and solve buttons and game status
+        hb_bot = QHBoxLayout()                   # Bottom box holding the hint and change buttons and game time
 
         # Create a button to reset the board
         self.reset_button = QPushButton("Reset", self)
         self.reset_button.setFixedSize(QSize(64, 32))
-        self.reset_button.pressed.connect(self.reset_button_click)
-        hb_top.addWidget(self.reset_button, 0, Qt.Alignment())
+        self.reset_button.pressed.connect(self.reset_button_click)  # Links the click to self.reset_button_click
+        hb_top.addWidget(self.reset_button, 0, Qt.Alignment())      # Adds the button to the horizontal box
 
         # Create a status label
         self.game_state_label = QLabel()
@@ -64,8 +73,8 @@ class MainWindow(QMainWindow):
         # Create a button to solve the board
         self.solve_button = QPushButton("Solve", self)
         self.solve_button.setFixedSize(QSize(64, 32))
-        self.solve_button.pressed.connect(self.solve_button_click)  # Links the click to self.button_click function
-        hb_top.addWidget(self.solve_button, 0, Qt.Alignment())  # Adds the button to the horizontal box
+        self.solve_button.pressed.connect(self.solve_button_click)  # Links the click to self.solve_button_click
+        hb_top.addWidget(self.solve_button, 0, Qt.Alignment())      # Adds the button to the horizontal box
 
         # Add the horizontal box to the vertical box
         vb.addLayout(hb_top)
@@ -73,30 +82,30 @@ class MainWindow(QMainWindow):
         # Create a button to make it easier
         self.hint_button = QPushButton("Hint", self)
         self.hint_button.setFixedSize(QSize(64, 32))
-        self.hint_button.pressed.connect(self.hint_button_click)
-        hb_bottom.addWidget(self.hint_button, 0, Qt.Alignment())
+        self.hint_button.pressed.connect(self.hint_button_click)    # Links the click to self.hint_button_click
+        hb_bot.addWidget(self.hint_button, 0, Qt.Alignment())       # Adds the button to the horizontal box
 
         # Create the clock label (timer)
         self.clock = QLabel()
         self.clock.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.clock.setFont(f)
         self.clock.setText("Time: 000.000")
-        hb_bottom.addWidget(self.clock, 0, Qt.Alignment())  # Adds the clock label to the horizontal box
+        hb_bot.addWidget(self.clock, 0, Qt.Alignment())             # Adds the clock label to the horizontal box
 
         # Create the timer object to keep track of time
         self._timer = QTimer()
-        self._timer.timeout.connect(self.update_timer)  # Connects the timer to self.update_timer
-        self._timer.start(10)  # 1 second timer                 # Updates and calls self.update_timer every 10 ms
+        self._timer.timeout.connect(self.update_timer)              # Connects the timer to self.update_timer
+        self._timer.start(10)                                       # Updates and calls self.update_timer every 10 ms
         self._timer_start_nsecs = 0
 
         # Create a board size label
         self.change_button = QPushButton("Change", self)
         self.change_button.setFixedSize(QSize(64, 32))
-        self.change_button.clicked.connect(self.change_button_click)
-        hb_bottom.addWidget(self.change_button, 0, Qt.Alignment())
+        self.change_button.clicked.connect(self.change_click)       # Connects button to self.change_click
+        hb_bot.addWidget(self.change_button, 0, Qt.Alignment())     # Adds the change button to the horizontal box
 
         # Add the bottom horizontal box to the vertical box
-        vb.addLayout(hb_bottom)
+        vb.addLayout(hb_bot)
 
         # Create a grid layout to hold all of the cell objects for each cell
         self.grid = QGridLayout()
@@ -107,12 +116,14 @@ class MainWindow(QMainWindow):
         self.first_window.setLayout(vb)
         self.setCentralWidget(self.first_window)
 
-        # Initializes grid with cell objects and sets up the minefield
+        # Initializes grid with cell objects
         self.init_map()
         self.show()
 
+        # Shows the user the generating window first so that they know the program is running
         QApplication.processEvents()
 
+        # Sets up the board and updates the status label and tracker, and starts the timer
         self.set_up_board()
         self.game_state_label.setText("Play!")
         self.game_status = 1
@@ -122,7 +133,10 @@ class MainWindow(QMainWindow):
         self.show()
 
     def init_map(self):
+        """ Initializes the grid to be filled with binairo cell objects
+        """
 
+        # Iterates through all cells in the grid
         for x in range(0, self.board_x_size):
             for y in range(0, self.board_y_size):
 
@@ -134,51 +148,76 @@ class MainWindow(QMainWindow):
                 w.clicked.connect(self.cell_clicked)                # Called when cell is clicked
 
     def clear_board(self):
+        """ Clears the board variable that keeps track of each cell state
+        """
         self.board = np.zeros((self.board_y_size, self.board_x_size))
 
     def set_up_board(self):
+        """ Sets up the binairo board with a new, unsolved puzzle
+        """
 
+        # Find the positions to be filled in to create a solvable board
         positions = self.create_solvable_board()
         temp_board = self.board.copy()
+
+        # Clear the board so that only the starting cells are filled
         self.clear_board()
 
+        # Goes through the positions one by one
         for i in range(len(positions)):
             x, y = positions[i]
-            w = self.grid.itemAtPosition(y, x).widget()
-            w.selected_state = temp_board[y, x]
-            w.is_seeded = True
-            w.update()
-            self.board[y, x] = temp_board[y, x]
+            w = self.grid.itemAtPosition(y, x).widget()     # Finds the corresponding widget cell object
+            w.selected_state = temp_board[y, x]             # Sets it to the correct state
+            w.is_seeded = True                              # Sets it as a seeded cell
+            w.update()                                      # Updates the appearance
+            self.board[y, x] = temp_board[y, x]             # Updates the self.board as well
 
     def create_solvable_board(self):
+        """ Finds the positions and states to fill in to create a solvable binairo board
+        :return positions: A list of positions to be filled in to create a solvable board
+        """
 
+        # Initialize conditions and counters
         can_be_solved = False
         counter = 0
         positions = []
-        solution = None
 
+        # Loop until we create a board that can be solved
         while not can_be_solved:
+
+            # Update counter and display status
             counter += 1
             print("Generating board trial %d" % counter)
 
+            # Clears the board to generate a new one that is solvable
             positions = []
             self.clear_board()
+
+            # First seed num_initial_seed randomly and sees if this is solvable
             while len(positions) < self.num_initial_seed:
                 x = random.randint(0, self.board_x_size - 1)
                 y = random.randint(0, self.board_y_size - 1)
+
+                # Makes sure that the same position is not chosen twice
                 if (x, y) not in positions:
                     random_state = random.choice([-1, 1])
                     self.board[y, x] = random_state
+
+                    # If the random point makes the board invalid, we try again
                     if not self.is_valid_board():
                         self.board[y, x] = 0
                     else:
                         positions.append((x, y))
 
-            self.recursive_timer = time.time()
+            # We try and find the solution to the board
+            self.recursive_timer = time.time()          # We reset the timer to limit each solution to be 5 seconds
             solution = self.get_solution_to_board()
+
+            # If a solution is possible, we exit the loop
             if solution is not None:
                 can_be_solved = True
 
+        # We then add a few more positions so that the number of starting positions matches the difficulty selected
         while len(positions) < self.num_cells_start:
             x = random.randint(0, self.board_x_size - 1)
             y = random.randint(0, self.board_y_size - 1)
@@ -188,52 +227,76 @@ class MainWindow(QMainWindow):
         return positions
 
     def get_solution_to_board(self):
+        """ Recursively finds the solution give the current self.board
+        :return solution: The solution to the current board, none if no solution
+        """
 
+        # Base case, if the board is not valid or the time exceeds the maximum allowed time
+        # We return no solution
         if not self.is_valid_board() or time.time() - self.recursive_timer > 5:
             return None
 
+        # Loops through all positions of the board to find the next blank space
         for y in range(self.board_y_size):
             for x in range(self.board_x_size):
                 if self.board[y, x] == 0:
 
+                    # First make a copy of the current board
                     temp_board = self.board.copy()
+
+                    # Tries to fill in with a white circle, and recursively sees if a solution is possible
                     self.board[y, x] = 1
                     self.apply_heuristics()
                     solution = self.get_solution_to_board()
 
+                    # If the solution is not possible, we reset the board to the copy, and try with a black circle
                     if solution is None:
                         self.board = temp_board.copy()
                         self.board[y, x] = -1
                         self.apply_heuristics()
                         solution = self.get_solution_to_board()
 
+                        # If neither white nor black circle works, we reset the board, and return as this path
+                        # is invalid
                         if solution is None:
                             self.board = temp_board.copy()
                             self.board[y, x] = 0
 
                     return solution
 
+        # If no blank space remains and board is valid, we have found the solution, and return the solution
         return self.board
 
     def is_valid_board(self):
+        """ Checks that the board is valid as is
+        :return boolean: True if the board is valid, False otherwise
+        """
 
+        # Checks whether there are the right number of black or white circles in each row and column
         if not self.has_valid_rows() or not self.has_valid_cols():
             return False
 
+        # Checks if there are circles that are the same three in a row or column
         if not self.has_valid_adjacent_rows() or not self.has_valid_adjacent_cols():
             return False
 
+        # Checks if there are any repeated rows or columns
         if not self.has_no_repeated_rows() or not self.has_no_repeated_cols():
             return False
 
         return True
 
     def has_valid_rows(self):
+        """ Checks if the number of white or black circles are valid per each row
+        :return boolean: True if valid, false otherwise
+        """
 
+        # Loops through each row
         for y in range(self.board_y_size):
             num_white = 0
             num_black = 0
 
+            # Counts the number of white and black circles in each row
             for x in range(self.board_x_size):
                 c = self.board[y, x]
 
@@ -242,17 +305,23 @@ class MainWindow(QMainWindow):
                 elif c == -1:
                     num_black += 1
 
+            # Row is invalid if the number of black or white exceeds half the row length
             if num_black > self.board_x_size / 2 or num_white > self.board_y_size / 2:
                 return False
 
         return True
 
     def has_valid_cols(self):
+        """ Checks if the number of white or black circles are valid per each column
+        :return boolean: True if valid, false otherwise
+        """
 
+        # Loops through each column
         for x in range(self.board_x_size):
             num_white = 0
             num_black = 0
 
+            # Counts the number of white and black circles in each column
             for y in range(self.board_y_size):
                 c = self.board[y, x]
 
@@ -261,14 +330,21 @@ class MainWindow(QMainWindow):
                 elif c == -1:
                     num_black += 1
 
+            # Column is invalid if the number of black or white exceeds half the column length
             if num_black > self.board_x_size / 2 or num_white > self.board_y_size / 2:
                 return False
 
         return True
 
     def has_valid_adjacent_rows(self):
+        """ Checks whether there are instances where three of the same colour circle appears consecutively row-wise
+        :return boolean: True if valid, False otherwise
+        """
 
+        # Loops through each row
         for y in range(self.board_y_size):
+
+            # Checks if three consecutive are not blank and have the same colour
             for x in range(2, self.board_x_size):
                 c = self.board[y, x]
                 b = self.board[y, x - 1]
@@ -281,8 +357,14 @@ class MainWindow(QMainWindow):
         return True
 
     def has_valid_adjacent_cols(self):
+        """ Checks whether there are instances where three of the same colour circle appears consecutively column-wise
+        :return boolean: True if valid, False otherwise
+        """
 
+        # Loops through each column
         for x in range(self.board_x_size):
+
+            # Checks if three consecutive are not blank and have the same colour
             for y in range(2, self.board_y_size):
                 c = self.board[y, x]
                 b = self.board[y - 1, x]
@@ -295,8 +377,14 @@ class MainWindow(QMainWindow):
         return True
 
     def has_no_repeated_rows(self):
+        """ Checks whether rows are repeated
+        :return boolean: True if no rows are repeated, False otherwise
+        """
 
+        # Loops through each row
         for i in range(self.board_y_size):
+
+            # Compares each row with each subsequent row
             for j in range(i + 1, self.board_y_size):
                 same = True
                 for k in range(self.board_x_size):
@@ -311,8 +399,14 @@ class MainWindow(QMainWindow):
         return True
 
     def has_no_repeated_cols(self):
+        """ Checks whether columns are repeated
+        :return boolean: True if no columns are repeated, False otherwise
+        """
 
+        # Loops through each column
         for i in range(self.board_x_size):
+
+            # Compares each column with each subsequent column
             for j in range(i + 1, self.board_x_size):
                 same = True
                 for k in range(self.board_y_size):
@@ -487,7 +581,7 @@ class MainWindow(QMainWindow):
             self.game_status = 1
             self._timer_start_nsecs += time.time() - self.recursive_timer
 
-    def change_button_click(self):
+    def change_click(self):
         self.switch_window.emit()
 
     def update_timer(self):

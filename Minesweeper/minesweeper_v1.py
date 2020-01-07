@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
         self._timer_start_nsecs = 0             # Initializes timer to 0
 
         # Creates a widget object, a vertical box object, and a horizontal box object
-        w = QWidget()
+        w = QWidget(*args, **kwargs)
         vb = QVBoxLayout()
         hb = QHBoxLayout()
 

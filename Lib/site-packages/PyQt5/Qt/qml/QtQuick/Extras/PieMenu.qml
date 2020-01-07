@@ -332,7 +332,7 @@ Control {
     /*!
         \qmlmethod void addItem(string text)
 
-        Adds a \a text item to the end of the menu items.
+        Adds an item to the end of the menu items.
 
         Equivalent to passing calling \c insertItem(menuItems.length, text).
 

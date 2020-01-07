@@ -4,4 +4,3 @@ classname QtQuickExtrasPlugin
 #typeinfo plugins.qmltypes
 
 depends QtGraphicalEffects 1.0
-depends QtQml 2.14

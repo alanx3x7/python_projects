@@ -39,7 +39,6 @@ import QtQuick.Controls.Material 2.12
 import QtQuick.Controls.Material.impl 2.12
 
 Rectangle {
-    id: indicator
     implicitWidth: 20
     implicitHeight: 20
     radius: width / 2
@@ -57,6 +56,6 @@ Rectangle {
         height: 10
         radius: width / 2
         color: parent.border.color
-        visible: indicator.control.checked || indicator.control.down
+        visible: control.checked || control.down
     }
 }

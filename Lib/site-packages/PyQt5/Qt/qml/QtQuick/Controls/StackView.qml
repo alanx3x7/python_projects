@@ -515,24 +515,24 @@ FocusScope {
     property StackViewDelegate delegate: StackViewSlideDelegate {}
 
     /*! \qmlmethod Item StackView::push(Item item)
-        Pushes an \a item onto the stack.
+        Pushes an item onto the stack.
 
         The function can also take a property list as argument - \c {Item StackView::push(jsobject dict)}, which
         should contain one or more of the following properties:
         \list
-        \li \a item: this property is required, and holds the item you want to push.
-        \li \e properties: a list of QML properties that should be assigned
+        \li \c item: this property is required, and holds the item you want to push.
+        \li \c properties: a list of QML properties that should be assigned
             to the item upon push. These properties will be copied into the item when it is
             loaded (in case of a component or URL), or when it becomes the current item for the
             first time (normally upon push).
-        \li \e immediate: set this property to \c true to skip transition effects. When pushing
+        \li \c immediate: set this property to \c true to skip transition effects. When pushing
             an array, you only need to set this property on the first element to make the
             whole operation immediate.
-        \li \e replace: set this property to replace the current item on the stack. When pushing
+        \li \c replace: set this property to replace the current item on the stack. When pushing
             an array, you only need to set this property on the first element to replace
             as many elements on the stack as inside the array.
-        \li \e destroyOnPop: set this property to specify if the item needs to be destroyed
-            when its popped off the stack. By default (if \e destroyOnPop is not specified),
+        \li \c destroyOnPop: set this property to specify if the item needs to be destroyed
+            when its popped off the stack. By default (if \a destroyOnPop is not specified),
             StackView will destroy items pushed as components or URLs. Items
             not destroyed will be re-parented to the original parents they had before being
             pushed onto the stack, and hidden. If you need to set this property, do it with
@@ -700,7 +700,7 @@ FocusScope {
     }
 
     /*! \qmlmethod Item StackView::find(function, bool onlySearchLoadedItems = false)
-        Search for a specific item inside the stack. \a function will
+        Search for a specific item inside the stack. \a func will
         be called for each item in the stack (with the item as argument)
         until the function returns true. Return value will be the item found. For
         example:

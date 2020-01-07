@@ -70,7 +70,7 @@ T.ToolTip {
     contentItem: Text {
         text: control.text
         font: control.font
-        wrapMode: Text.Wrap
+        // TODO: wrapMode: Label.Wrap
         color: control.Material.foreground
     }
 

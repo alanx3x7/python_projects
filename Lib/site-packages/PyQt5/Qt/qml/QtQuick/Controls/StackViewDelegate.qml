@@ -56,8 +56,7 @@ QtObject {
     /*!
         \qmlmethod Transition StackViewDelegate::getTransition(properties)
 
-        The base implementation of this function just looks for a property named
-        \a {properties}.name inside itself and returns it.
+        The base implementation of this function just looks for a property named properties.name inside itself.
         \sa {Transitions}
     */
     function getTransition(properties)
@@ -68,9 +67,7 @@ QtObject {
     /*!
         \qmlmethod void StackViewDelegate::transitionFinished(properties)
 
-        Handles the completion of a transition for \a properties. The base
-        implementation of this function is empty.
-
+        The base implementation of this function is empty.
         \sa {Transitions}
     */
     function transitionFinished(properties)

@@ -37,7 +37,6 @@
 **
 ****************************************************************************/
 
-import QtQml 2.14 as Qml
 import QtQuick 2.2
 import QtQuick.Controls 1.2
 import QtQuick.Controls.Private 1.0
@@ -243,10 +242,9 @@ Item {
                                                             ? ListView.Center : ListView.Beginning)
     }
 
-    Qml.Binding {
+    Binding {
         target: scrollView.__verticalScrollBar
         property: "singleStep"
         value: itemHeight
-        restoreMode: Binding.RestoreBinding
     }
 }

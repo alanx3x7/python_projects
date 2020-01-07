@@ -52,6 +52,6 @@ T.Pane {
     padding: 9
 
     background: Rectangle {
-        color: control.palette.window
+        color: palette.window
     }
 }

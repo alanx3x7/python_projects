@@ -37,7 +37,6 @@
 **
 ****************************************************************************/
 
-import QtQml 2.14 as Qml
 import QtQuick.Window 2.2
 import QtQuick 2.2
 import QtQuick.Controls 1.2
@@ -172,21 +171,19 @@ Window {
 
     /*! \internal */
     property real __width: 0
-    Qml.Binding {
+    Binding {
         target: root
         property: "__width"
         when: (root.minimumWidth <= root.maximumWidth) && !contentArea.__noImplicitWidthGiven
         value: Math.max(Math.min(root.maximumWidth, contentArea.implicitWidth), root.minimumWidth)
-        restoreMode: Binding.RestoreBinding
     }
     /*! \internal */
     property real __height: 0
-    Qml.Binding {
+    Binding {
         target: root
         property: "__height"
         when: (root.minimumHeight <= root.maximumHeight) && !contentArea.__noImplicitHeightGiven
         value: Math.max(Math.min(root.maximumHeight, contentArea.implicitHeight + __topBottomMargins), root.minimumHeight)
-        restoreMode: Binding.RestoreBinding
     }
     /* As soon as an application developer writes
          width: 200
@@ -227,32 +224,16 @@ Window {
             onStatusChanged: if (status === Loader.Error) console.error("Failed to load Style for", root)
         }
 
-        Qml.Binding {
-            target: toolBar
-            property: "parent"
-            value: __panel.toolBarArea
-            restoreMode: Binding.RestoreBinding
-        }
-        Qml.Binding {
-            target: statusBar
-            property: "parent"
-            value: __panel.statusBarArea
-            restoreMode: Binding.RestoreBinding
-        }
+        Binding { target: toolBar; property: "parent"; value: __panel.toolBarArea }
+        Binding { target: statusBar; property: "parent"; value: __panel.statusBarArea }
 
-        Qml.Binding {
+        Binding {
             property: "parent"
             target: menuBar ? menuBar.__contentItem : null
             when: menuBar && !menuBar.__isNative
             value: __panel.menuBarArea
-            restoreMode: Binding.RestoreBinding
         }
-        Qml.Binding {
-            target: menuBar
-            property: "__parentWindow"
-            value: root
-            restoreMode: Binding.RestoreBinding
-        }
+        Binding { target: menuBar; property: "__parentWindow"; value: root }
 
         Keys.forwardTo: menuBar ? [menuBar.__contentItem, __panel] : []
 

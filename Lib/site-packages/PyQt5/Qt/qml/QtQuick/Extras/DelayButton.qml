@@ -37,7 +37,6 @@
 **
 ****************************************************************************/
 
-import QtQml 2.14 as Qml
 import QtQuick 2.2
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
@@ -113,12 +112,11 @@ Button {
         }
     }
 
-    Qml.Binding {
+    Binding {
         // Force checkable to false to get full control over the checked -property
         target: root
         property: "checkable"
         value: false
-        restoreMode: Binding.RestoreBinding
     }
 
     onProgressChanged: {

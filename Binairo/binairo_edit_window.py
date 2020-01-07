@@ -29,7 +29,7 @@ class EditWindow(QMainWindow):
         self.num_added_hint = 3
 
         # Creates a widget object, a vertical box object, and a horizontal box object
-        self.first_window = QWidget()
+        self.first_window = QWidget(*args, **kwargs)
         vb_size_radio = QVBoxLayout()
         vb_diff_radio = QVBoxLayout()
         vb_main = QVBoxLayout()
