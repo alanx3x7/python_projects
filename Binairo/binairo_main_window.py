@@ -421,7 +421,10 @@ class MainWindow(QMainWindow):
         return True
 
     def apply_heuristics(self):
+        """ Attempts to solve the board by applying human solving heuristics to the board
+        """
 
+        # Continuously applies these heuristics until no change to the board is made
         while True:
             temp_board = self.board.copy()
             self.apply_simple_heuristics()
@@ -430,82 +433,129 @@ class MainWindow(QMainWindow):
                 break
 
     def apply_simple_heuristics(self):
+        """ Solves the board using the heuristics that the same colour cannot occur consecutively three times a row
+        """
 
+        # Loops through all the cells one by one
         for y in range(self.board_y_size):
             for x in range(self.board_x_size):
+
+                # If the cell is blank
                 if self.board[y, x] == 0:
 
+                    # Checks if the two cells to the right are the same colour; if they are, this must be different
                     if x < self.board_x_size - 2:
                         if self.board[y, x + 1] == self.board[y, x + 2] != 0:
                             self.board[y, x] = -self.board[y, x + 1]
 
+                    # Checks if the two cells to the left are the same colour; if they are, this must be different
                     if x > 1:
                         if self.board[y, x - 2] == self.board[y, x - 1] != 0:
                             self.board[y, x] = -self.board[y, x - 1]
 
+                    # Checks if the two cells below are the same colour; if they are, this must be different
                     if y < self.board_y_size - 2:
                         if self.board[y + 1, x] == self.board[y + 2, x] != 0:
                             self.board[y, x] = -self.board[y + 1, x]
 
+                    # Checks if the two cells above are the same colour; if they are, this must be different
                     if y > 1:
                         if self.board[y - 1, x] == self.board[y - 2, x] != 0:
                             self.board[y, x] = -self.board[y - 1, x]
 
+                    # Checks if the adjacent cells row-wise are the same colour; if they are, this must be different
                     if 0 < x < self.board_x_size - 1:
                         if self.board[y, x - 1] == self.board[y, x + 1] != 0:
                             self.board[y, x] = -self.board[y, x + 1]
 
+                    # Checks if the adjacent cells column-wise are the same colour; if they are, this must be different
                     if 0 < y < self.board_y_size - 1:
                         if self.board[y - 1, x] == self.board[y + 1, x] != 0:
                             self.board[y, x] = -self.board[y + 1, x]
 
     def apply_number_heuristics(self):
+        """ Applies heuristic where the max number of one colour has been filled, all other cells
+            in the same row or column must be the opposite colour.
+        """
 
+        # Iterates through each row of the board
         for y in range(self.board_y_size):
+
+            # Count the number of whites and blacks
             num_white = np.count_nonzero(self.board[y, :] == 1)
             num_black = np.count_nonzero(self.board[y, :] == -1)
+
+            # If the maximum number of whites have occurred, the remaining must be black
             if num_white == self.board_x_size / 2:
                 for x in range(self.board_x_size):
                     if self.board[y, x] == 0:
                         self.board[y, x] = -1
+
+            # If the maximum number of blacks have occurred, the remaining must be white
             elif num_black == self.board_x_size / 2:
                 for x in range(self.board_x_size):
                     if self.board[y, x] == 0:
                         self.board[y, x] = 1
 
+        # Iterates through each column of the board
         for x in range(self.board_x_size):
+
+            # Counts the number of whites and blacks in each column
             num_white = np.count_nonzero(self.board[:, x] == 1)
             num_black = np.count_nonzero(self.board[:, x] == -1)
+
+            # If the maximum number of whites have occurred, the remaining must be black
             if num_white == self.board_y_size / 2:
                 for y in range(self.board_y_size):
                     if self.board[y, x] == 0:
                         self.board[y, x] = -1
+
+            # If the maximum number of blacks have occurred, the remaining must be white
             elif num_black == self.board_y_size / 2:
                 for y in range(self.board_y_size):
                     if self.board[y, x] == 0:
                         self.board[y, x] = 1
 
     def cell_clicked(self, x, y, state):
+        """ Handles signals sent by each individual cell when it is clicked
+        :param x: The x coordinate of the cell that was clicked
+        :param y: The y coordinate of the cell that was clicked
+        :param state: The state of the cell after clicked
+        """
 
+        # If the cell is no longer blank, we decrement the number of blanks left
         if self.board[y, x] == 0 and state != 0:
             self.num_blanks -= 1
+
+        # If the cell becomes blank, we increment the number of blanks left
         elif self.board[y, x] != 0 and state == 0:
             self.num_blanks += 1
 
+        # Set the corresponding cell state to be correct
         self.board[y, x] = state
 
+        # If the newly clicked cell results in an invalid board, we update as such
         w = self.grid.itemAtPosition(y, x).widget()
         if not self.is_valid_board():
             w.is_valid = False
             w.update()
+
+        # If it is valid, we update as such
         else:
             w.is_valid = True
             w.update()
 
+        # We update the number of blanks remaining on the board
         num_blanks_remaining = self.board_x_size * self.board_y_size - np.count_nonzero(self.board)
+
+        # If there are no blanks remaining and the board is valid, a solution has been reached
         if num_blanks_remaining == 0 and self.is_valid_board():
+
+            # We update the game status accordingly
             self.game_state_label.setText("Hooray!")
             self.game_status = 0
+
+            # We fix all cells so that they cannot be changed
             for y in range(self.board_y_size):
                 for x in range(self.board_x_size):
                     w = self.grid.itemAtPosition(y, x).widget()
@@ -513,17 +563,25 @@ class MainWindow(QMainWindow):
                     w.update()
 
     def solve_button_click(self):
+        """ Called when the solve button is clicked. Fills in the board with the solution.
+        """
 
+        # Updates the label and the game status
         self.game_state_label.setText("Solving")
         self.game_status = 0
         QApplication.processEvents()
+
+        # Starts timer to keep track of how long this takes and finds the solution
         first_time = time.time()
         self.recursive_timer = time.time()
         solution = self.get_solution_to_board()
         print("Time taken to solve: %07.3f seconds" % (time.time() - first_time))
 
+        # If there is no solution, state that the board cannot be solved; game continues
         if solution is None:
             self.game_state_label.setText("Cannot be solved")
+
+        # Otherwise, we update the board with the solution, and change the label to say solution
         else:
             for y in range(self.board_y_size):
                 for x in range(self.board_x_size):
@@ -534,6 +592,8 @@ class MainWindow(QMainWindow):
             self.game_state_label.setText("Solution")
 
     def reset_button_click(self):
+        """ Called when the reset button is clicked. Generates a new binairo puzzle for the board
+        """
 
         self.game_status = 0
         self.game_state_label.setText("Generating puzzle")
@@ -550,46 +610,63 @@ class MainWindow(QMainWindow):
         self.game_status = 1
 
     def hint_button_click(self):
+        """ Called when hint button is pressed. Randomly fills in some cells to the board to help user solve it.
+        """
 
-        self.game_status = 0                    # Pause the game so that the timer does not keep counting
+        self.game_status = 0                        # Pause the game so that the timer does not keep counting
         self.game_state_label.setText("Generating Hint")
-        QApplication.processEvents()
+        QApplication.processEvents()                # Makes sure that these updates are displayed to user
 
-        self.recursive_timer = time.time()
-        temp_board = self.board.copy()
+        # We first find the solution to the current board
+        self.recursive_timer = time.time()          # Resets recursive timer to ensure it does it in time
+        temp_board = self.board.copy()              # Makes a copy as the solution overwrite current board state
         num_blanks_remaining = self.board_x_size * self.board_y_size - np.count_nonzero(temp_board)
-        solution = self.get_solution_to_board()
+        solution = self.get_solution_to_board()     # Finds the solution
 
+        # If there is a solution possible
         if solution is not None:
             positions = []
+
+            # We add the lower of num_added_per_hint or the number of blanks remaining number of cells to the board
             while len(positions) < min(num_blanks_remaining, self.num_added_per_hint):
+
+                # We randomly find a position on the board
                 x = random.randint(0, self.board_x_size - 1)
                 y = random.randint(0, self.board_y_size - 1)
-                if temp_board[y, x] == 0:
-                    temp_board[y, x] = solution[y, x]
-                    w = self.grid.itemAtPosition(y, x).widget()
-                    w.selected_state = solution[y, x]
-                    w.is_seeded = True
-                    w.update()
-                    positions.append((x, y))
 
+                # If it is blank
+                if temp_board[y, x] == 0:
+                    temp_board[y, x] = solution[y, x]               # Updates state of the cell in the copied board
+                    w = self.grid.itemAtPosition(y, x).widget()     # Find the widget corresponding to that position
+                    w.selected_state = solution[y, x]               # Update the state of the cell
+                    w.is_seeded = True                              # Makes it seeded so cannot be changed
+                    w.update()                                      # Updates the appearance of the cell
+                    positions.append((x, y))                        # Adds the position to the positions list
+
+        # Reverts the board to have the original board state with the added hints
         self.board = temp_board
+
+        # If there are no more blanks remaining, then we have essentially found the solution
         if num_blanks_remaining <= self.num_added_per_hint:
             self.game_state_label.setText("Solution")
+
+        # Otherwise the game continues, so we update the label, game status, and continue with the clock
         else:
             self.game_state_label.setText("Play!")
             self.game_status = 1
             self._timer_start_nsecs += time.time() - self.recursive_timer
 
     def change_click(self):
+        """ Called when the change button is clicked. Emits a signal to controller to change to the edit window
+        """
         self.switch_window.emit()
 
     def update_timer(self):
         """ Called at the predetermined rate to update the timer label regularly
         """
 
-        if self.game_status == 1:  # Only update timer when game is being played
+        if self.game_status == 1:                           # Only update timer when game is being played
             n_secs = time.time() - self._timer_start_nsecs  # Finds the time passed since the game started
-            self.clock.setText("Time: %07.3f" % n_secs)  # Updates the timer label to display time elapsed
+            self.clock.setText("Time: %07.3f" % n_secs)     # Updates the timer label to display time elapsed
         else:
-            self._timer_start_nsecs += 0.01
+            self._timer_start_nsecs += 0.01                 # If not playing, we increment the timer (i.e. hints)
