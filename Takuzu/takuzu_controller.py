@@ -1,12 +1,12 @@
-# Binairo controller class made from PyQt5
+# Takuzu controller class made from PyQt5
 # Author: Alan Lai
 # Email: alan_lai@jhu.edu
 # Version: 1.0
 # Last Updated: 2020/01/08
 
 # Import the individual windows
-from binairo_edit_window import EditWindow
-from binairo_main_window import MainWindow
+from takuzu_edit_window import EditWindow
+from takuzu_main_window import MainWindow
 
 
 class Controller:

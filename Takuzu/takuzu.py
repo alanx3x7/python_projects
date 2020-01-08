@@ -1,4 +1,4 @@
-# Binairo made from PyQt5
+# Takuzu made from PyQt5
 # Author: Alan Lai
 # Email: alan_lai@jhu.edu
 # Version: 1.0
@@ -6,7 +6,7 @@
 
 # Necessary imports
 import sys
-from binairo_controller import Controller
+from takuzu_controller import Controller
 from PyQt5.QtWidgets import *
 
 

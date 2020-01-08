@@ -1,4 +1,4 @@
-# Binairo main class made from PyQt5
+# Takuzu main class made from PyQt5
 # Author: Alan Lai
 # Email: alan_lai@jhu.edu
 # Version: 1.0
@@ -15,7 +15,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 # Importing the class file for the individual cells
-from binairo_cell import Cell
+from takuzu_cell import Cell
 
 
 class MainWindow(QMainWindow):
@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
     def __init__(self, x_board_size, y_board_size, num_cells_start, num_per_hint, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.title = 'Alan\'s Binairo'              # Name of the window to be opened
+        self.title = 'Alan\'s Takuzu'              # Name of the window to be opened
         self.setWindowTitle(self.title)             # Sets the name of the window to be the title
 
         self.board_x_size = x_board_size            # Initializes the x size of the board (width)

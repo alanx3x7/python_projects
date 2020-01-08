@@ -1,4 +1,4 @@
-# Binairo cell class file made from PyQt5
+# Takuzu cell class file made from PyQt5
 # Author: Alan Lai
 # Email: alan_lai@jhu.edu
 # Version: 1.0

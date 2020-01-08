@@ -2,7 +2,7 @@
 
 * Author: Alan Lai
 * Email: alan_lai@jhu.edu
-* Last Updated: 2020/01/03
+* Last Updated: 2020/01/08
 
 ## Background
 **_What is this?_** This is a series of small games that I've coded on my free 
@@ -17,7 +17,7 @@ sub-folders. Please feel free to try out some of the games yourself if you're
 interested!
 
 **_Why are they all in the same project?_** All of these games don't require 
-too much code (ranging from 100~500 lines including comments), and so having 
+too much code (ranging from 100~1000 lines including comments), and so having 
 a separate project folder for each game seemed excessive. This is also much 
 easier to manage as well. 
 
@@ -31,6 +31,6 @@ could do, please let me know via email! Thanks!
 ## Projects
 |Project Name       |Brief Description|
 |:-------:          |-----------------|     
-|[Click Games](https://github.com/alanx3x7/python_projects/tree/master/Click_Game)        |A couple of point-and-click games involving circles
-|[Minesweeper](https://github.com/alanx3x7/python_projects/tree/master/Minesweeper)        |Your typical Windows minesweeper game with most features
-
+|[Click Games](https://github.com/alanx3x7/python_projects/tree/master/Click_Game)          |A couple of point-and-click games involving circles
+|[Minesweeper](https://github.com/alanx3x7/python_projects/tree/master/Minesweeper)         |Your typical Windows minesweeper game with most features
+|[Takuzu/Binairo](https://https://github.com/alanx3x7/python_projects/tree/master/Takuzu)  |A simple Takuzu puzzle + solver|

@@ -2,10 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3ad5d6a5-a5dc-4948-a4d7-6a805a5c862a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/Python_Projects.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Python_Projects.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/alanx.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/alanx.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Binairo/binairo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Binairo/binairo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Binairo/binairo_cell.py" beforeDir="false" afterPath="$PROJECT_DIR$/Binairo/binairo_cell.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Binairo/binairo_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Binairo/binairo_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binairo/binairo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Takuzu/takuzu.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binairo/binairo_cell.py" beforeDir="false" afterPath="$PROJECT_DIR$/Takuzu/takuzu_cell.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binairo/binairo_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Takuzu/takuzu_controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binairo/binairo_edit_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Takuzu/takuzu_edit_window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Binairo/binairo_main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Takuzu/takuzu_main_window.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,7 +39,7 @@
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Binairo/binairo.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Takuzu/takuzu.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager" selected="Python.binairo">
@@ -46,11 +51,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="C:\Users\alanx\Documents\Python_Projects\Scripts\python.exe" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Binairo" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Takuzu" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Binairo/binairo.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Takuzu/takuzu.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="true" />
@@ -174,14 +179,14 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="96" y="31" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1578283155241">
+    <state x="96" y="31" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1578454000984">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state x="96" y="31" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.31.1280.689@0.31.1280.689" timestamp="1578283155241" />
-    <state x="421" y="131" key="FileChooserDialogImpl" timestamp="1578282554526">
+    <state x="96" y="31" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.31.1280.689@0.31.1280.689" timestamp="1578454000984" />
+    <state x="421" y="131" key="FileChooserDialogImpl" timestamp="1578453998536">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state x="421" y="131" key="FileChooserDialogImpl/0.31.1280.689@0.31.1280.689" timestamp="1578282554526" />
+    <state x="421" y="131" key="FileChooserDialogImpl/0.31.1280.689@0.31.1280.689" timestamp="1578453998536" />
     <state width="1259" height="72" key="GridCell.Tab.0.bottom" timestamp="1578413111966">
       <screen x="0" y="31" width="1280" height="689" />
     </state>

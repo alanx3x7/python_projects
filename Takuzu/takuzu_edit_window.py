@@ -1,4 +1,4 @@
-# Binairo edit class made from PyQt5
+# Takuzu edit class made from PyQt5
 # Author: Alan Lai
 # Email: alan_lai@jhu.edu
 # Version: 1.0
@@ -29,7 +29,7 @@ class EditWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.title = 'Alan\'s Binairo'          # Name of the window to be opened
+        self.title = 'Alan\'s Takuzu'          # Name of the window to be opened
         self.setWindowTitle(self.title)         # Sets the name of the window to be the title
 
         self.board_x_size = 10                  # x dimension of the board
