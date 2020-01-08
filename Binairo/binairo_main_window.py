@@ -2,7 +2,7 @@
 # Author: Alan Lai
 # Email: alan_lai@jhu.edu
 # Version: 1.0
-# Last Updated: 2020/01/07
+# Last Updated: 2020/01/08
 
 # Typical imports
 import random
