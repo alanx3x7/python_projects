@@ -14,11 +14,10 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
-# Importing the class file for the individual cells
-from takuzu_cell import Cell
+from tetris_board import TetrisBoard
 
 
-class MainWindow(QMainWindow):
+class TetrisMainWindow(QMainWindow):
     """ Main class window for the binairo game
     """
 
@@ -28,13 +27,35 @@ class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.title = 'Alan\'s Takuzu'  # Name of the window to be opened
+        self.title = 'Alan\'s Tetris'  # Name of the window to be opened
         self.setWindowTitle(self.title)  # Sets the name of the window to be the title
 
         self.width = 10
         self.height = 20
+        self.resize(650, 630)
 
         self.window = QWidget(*args, **kwargs)
-        vb = QVBoxLayout()
+        vb_left = QVBoxLayout()
+        vb_right = QVBoxLayout()
+        hb = QHBoxLayout()
 
+        # Create the game status label
+        self.game_state_label = QLabel()
+        self.game_state_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        f = self.game_state_label.font()  # Sets the font
+        f.setPointSize(10)
+        f.setWeight(75)
+        self.game_state_label.setFont(f)
+        self.game_state_label.setText("Play!")
+        vb_right.addWidget(self.game_state_label, 0, Qt.Alignment())
 
+        # Create the board
+        self.game_board = TetrisBoard()
+        vb_left.addWidget(self.game_board)
+
+        hb.addLayout(vb_left)
+        hb.addLayout(vb_right)
+
+        self.window.setLayout(hb)
+        self.setCentralWidget(self.window)
+        self.show()
