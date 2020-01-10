@@ -8,9 +8,9 @@ import numpy as np
 
 class TetrisBoard(QWidget):
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
 
-        super().__init__()
+        super().__init__(*args, **kwargs)
 
         self.width = 10
         self.height = 20
@@ -24,6 +24,8 @@ class TetrisBoard(QWidget):
         for y in range(self.height):
             self.y_cell_corners[y] = y * self.cell_side_length + 5
 
+        self.cell_colours = np.zeros()
+
     def paintEvent(self, event):
 
         # Creates the painter object and does things to it
@@ -35,4 +37,3 @@ class TetrisBoard(QWidget):
         for y in range(self.height):
             for x in range(self.width):
                 p.drawRect(self.x_cell_corners[x], self.y_cell_corners[y], 30, 30)
-
