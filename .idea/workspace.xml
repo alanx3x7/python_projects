@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3ad5d6a5-a5dc-4948-a4d7-6a805a5c862a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Python_Projects.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Python_Projects.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dictionaries/alanx.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dictionaries/alanx.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Tetris/tetris_main_window.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Binairo/binairo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Takuzu/takuzu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Binairo/binairo_cell.py" beforeDir="false" afterPath="$PROJECT_DIR$/Takuzu/takuzu_cell.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Binairo/binairo_controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Takuzu/takuzu_controller.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Binairo/binairo_edit_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Takuzu/takuzu_edit_window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Binairo/binairo_main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Takuzu/takuzu_main_window.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,22 +180,22 @@
       <screen x="0" y="31" width="1280" height="689" />
     </state>
     <state x="421" y="131" key="FileChooserDialogImpl/0.31.1280.689@0.31.1280.689" timestamp="1578453998536" />
-    <state width="1259" height="72" key="GridCell.Tab.0.bottom" timestamp="1578413111966">
+    <state width="1259" height="72" key="GridCell.Tab.0.bottom" timestamp="1578458300801">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state width="1259" height="72" key="GridCell.Tab.0.bottom/0.31.1280.689@0.31.1280.689" timestamp="1578413111966" />
-    <state width="1259" height="72" key="GridCell.Tab.0.center" timestamp="1578413111966">
+    <state width="1259" height="72" key="GridCell.Tab.0.bottom/0.31.1280.689@0.31.1280.689" timestamp="1578458300801" />
+    <state width="1259" height="72" key="GridCell.Tab.0.center" timestamp="1578458300801">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state width="1259" height="72" key="GridCell.Tab.0.center/0.31.1280.689@0.31.1280.689" timestamp="1578413111966" />
-    <state width="1259" height="72" key="GridCell.Tab.0.left" timestamp="1578413111966">
+    <state width="1259" height="72" key="GridCell.Tab.0.center/0.31.1280.689@0.31.1280.689" timestamp="1578458300801" />
+    <state width="1259" height="72" key="GridCell.Tab.0.left" timestamp="1578458300801">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state width="1259" height="72" key="GridCell.Tab.0.left/0.31.1280.689@0.31.1280.689" timestamp="1578413111966" />
-    <state width="1259" height="72" key="GridCell.Tab.0.right" timestamp="1578413111966">
+    <state width="1259" height="72" key="GridCell.Tab.0.left/0.31.1280.689@0.31.1280.689" timestamp="1578458300801" />
+    <state width="1259" height="72" key="GridCell.Tab.0.right" timestamp="1578458300801">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state width="1259" height="72" key="GridCell.Tab.0.right/0.31.1280.689@0.31.1280.689" timestamp="1578413111966" />
+    <state width="1259" height="72" key="GridCell.Tab.0.right/0.31.1280.689@0.31.1280.689" timestamp="1578458300801" />
     <state x="142" y="30" key="SettingsEditor" timestamp="1578376538944">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
