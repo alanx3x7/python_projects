@@ -159,7 +159,6 @@ class Tetromino():
         self.rotate()
 
     def wall_kick_offset(self, direction):
-
         table_num = 1 if self.identity.value == Shape.IShape else 0
         case_adjust = 0 if direction == 1 else -1
         case_num = (self.orientation.value * 2) + case_adjust

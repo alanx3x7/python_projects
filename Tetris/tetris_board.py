@@ -3,13 +3,22 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
+from enum import IntEnum
 import numpy as np
 import time
 
 from tetris_tetromino import Tetromino
 
 
+class Status(IntEnum):
+    PAUSED = 0
+    PLAYING = 1
+    GAMEOVER = 2
+
+
 class TetrisBoard(QWidget):
+
+    changed_game_status = pyqtSignal(Status)
 
     def __init__(self, *args, **kwargs):
 
@@ -21,6 +30,8 @@ class TetrisBoard(QWidget):
         self.cell_side_length = 30
         self.start_pos = (4, 0)
         self.colour_table = [0x000000, 0xFF0000, 0x00FF00, 0x00FFFF, 0x800080, 0xFFFF00, 0xFFA500, 0x0000FF]
+
+        self.game_status = Status.PAUSED
 
         # Key press things
         self.up_key_last_released = False
@@ -36,18 +47,19 @@ class TetrisBoard(QWidget):
 
         self.board = np.zeros((self.height, self.width))
 
-        self.timer = QBasicTimer()
+        self.frame_timer = QBasicTimer()
 
         self.floating = Tetromino(self.start_pos)
         self.setFocusPolicy(Qt.StrongFocus)
 
+        self.soft_drop_timer = QBasicTimer()
+        self.soft_drop_timer_speed = 500
+
         QApplication.processEvents()
 
-        self.timer.start(self.speed, self)
+        self.start_game()
 
     def paintEvent(self, event):
-
-        # Creates the painter object and does things to it
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
         self.paintFixed(p)
@@ -84,18 +96,31 @@ class TetrisBoard(QWidget):
                 center_y = self.y_cell_corners[positions[1]]
                 p.drawRect(center_x, center_y, 30, 30)
 
+    def start_game(self):
+        self.game_status = Status.PLAYING
+        self.changed_game_status.emit(self.game_status)
+        self.frame_timer.start(self.speed, self)
+
+    def pause_game(self):
+        self.game_status = Status.PAUSED
+        self.changed_game_status.emit(self.game_status)
+        self.frame_timer.stop()
+
+    def end_game(self):
+        self.game_status = Status.GAMEOVER
+        self.changed_game_status.emit(self.game_status)
+        self.frame_timer.stop()
+
     def timerEvent(self, event):
 
-        # self.floating.random_assign_shape()
+        if event.timerId() == self.frame_timer.timerId():
 
-        if event.timerId() == self.timer.timerId():
+            if not self.soft_drop_timer.isActive():
+                self.gravity()
 
-            # if self.isWaitingAfterLine:
-            #     self.isWaitingAfterLine = False
-            #     self.newPiece()
-            # else:
-            #     self.oneLineDown()
-            self.gravity()
+        elif event.timerId() == self.soft_drop_timer.timerId():
+            self.drop_floating()
+            self.soft_drop_timer.stop()
 
         else:
             super(TetrisBoard, self).timerEvent(event)
@@ -106,21 +131,15 @@ class TetrisBoard(QWidget):
         else:
             self.fix_floating_piece()
             self.clear_full_rows()
-            if self.create_new_piece():
-                self.update()
-            else:
-                print("Gameover")
+            self.create_new_piece()
 
     def drop_floating(self):
         while self.move_floating_piece(0, 1):
             self.update()
         self.fix_floating_piece()
         self.clear_full_rows()
-
-        if self.create_new_piece():
-            self.update()
-        else:
-            print("Gameover")
+        self.update()
+        self.create_new_piece()
 
     def move_floating_piece(self, x, y):
 
@@ -152,11 +171,14 @@ class TetrisBoard(QWidget):
     def create_new_piece(self):
         self.floating.update_center(self.start_pos[0], self.start_pos[1])
         self.floating.random_assign_shape()
+
         for positions in self.floating.coordinates:
             if positions[0] > -1 and positions[1] > -1:
                 if self.board[positions[1], positions[0]] != 0:
-                    return False
-        return True
+                    self.end_game()
+                    return
+
+        self.update()
 
     def rotate_floating_piece(self, direction):
         if direction == 1:
@@ -164,7 +186,6 @@ class TetrisBoard(QWidget):
             is_valid = False
             for positions in self.floating.wall_kick_offset(1):
                 if self.check_floating_valid(positions[0], positions[1]):
-                    print(positions)
                     self.move_floating_piece(positions[0], positions[1])
                     self.update()
                     is_valid = True
@@ -182,12 +203,23 @@ class TetrisBoard(QWidget):
 
         key = event.key()
 
+        if key == Qt.Key_P:
+            if self.game_status == Status.PAUSED:
+                self.start_game()
+            elif self.game_status == Status.PLAYING:
+                self.pause_game()
+
+        if self.game_status == Status.PAUSED or self.game_status == Status.GAMEOVER:
+            super(TetrisBoard, self).keyPressEvent(event)
+            return
+
         if key == Qt.Key_Left:
             self.move_floating_piece(-1, 0)
         elif key == Qt.Key_Right:
             self.move_floating_piece(1, 0)
         elif key == Qt.Key_Down:
-            self.move_floating_piece(0, 1)
+            if not self.move_floating_piece(0, 1):
+                self.soft_drop_timer.start(self.soft_drop_timer_speed, self)
         elif key == Qt.Key_Up:
             if time.time() - self.up_key_last_released > 0.025:
                 self.rotate_floating_piece(1)

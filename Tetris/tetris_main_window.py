@@ -15,6 +15,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 from tetris_board import TetrisBoard
+from tetris_board import Status
 
 
 class TetrisMainWindow(QMainWindow):
@@ -51,6 +52,7 @@ class TetrisMainWindow(QMainWindow):
 
         # Create the board
         self.game_board = TetrisBoard()
+        self.game_board.changed_game_status.connect(self.update_status_label)
         vb_left.addWidget(self.game_board)
 
         hb.addLayout(vb_left)
@@ -59,3 +61,7 @@ class TetrisMainWindow(QMainWindow):
         self.window.setLayout(hb)
         self.setCentralWidget(self.window)
         self.show()
+
+    def update_status_label(self, new_game_state):
+        self.game_state_label.setText(new_game_state.name)
+
