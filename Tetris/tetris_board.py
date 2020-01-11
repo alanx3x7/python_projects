@@ -107,6 +107,15 @@ class TetrisBoard(QWidget):
             else:
                 print("Gameover")
 
+    def drop_floating(self):
+        while self.move_floating_piece(0, 1):
+            self.update()
+        self.fix_floating_piece()
+        if self.create_new_piece():
+            self.update()
+        else:
+            print("Gameover")
+
     def move_floating_piece(self, x, y):
 
         if self.check_floating_valid(x, y):
@@ -160,5 +169,7 @@ class TetrisBoard(QWidget):
             self.move_floating_piece(0, 1)
         elif key == Qt.Key_Up:
             self.rotate_floating_piece(1)
+        elif key == Qt.Key_Space:
+            self.drop_floating()
 
         self.update()
