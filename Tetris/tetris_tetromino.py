@@ -10,10 +10,10 @@ from PyQt5.QtCore import *
 
 # List of orientations
 class Orientation(IntEnum):
-    UP = 0
-    LEFT = 1
-    DOWN = 2
-    RIGHT = 3
+    SPAWN = 0
+    RIGHT = 1
+    TWO = 2
+    LEFT = 3
 
     def next(self):
         new_index = self.value + 1
@@ -94,14 +94,14 @@ class Tetromino():
 
     kick_table = (
         # J, L, S, T, Z Shape
-        [[[0, 0], [-1, 0], [-1, +1], [0, -2], [-1, -2]],
-         [[0, 0], [+1, 0], [+1, -1], [0, +2], [+1, +2]],
-         [[0, 0], [+1, 0], [+1, -1], [0, +2], [+1, +2]],
-         [[0, 0], [-1, 0], [-1, +1], [0, -2], [-1, -2]],
-         [[0, 0], [+1, 0], [+1, +1], [0, -2], [+1, -2]],
-         [[0, 0], [-1, 0], [-1, -1], [0, +2], [-1, +2]],
-         [[0, 0], [-1, 0], [-1, -1], [0, +2], [-1, +2]],
-         [[0, 0], [+1, 0], [+1, +1], [0, -2], [+1, -2]]],
+        [[[0, 0], [-1, 0], [-1, +1], [0, -2], [-1, -2]],    # 0 -> R
+         [[0, 0], [+1, 0], [+1, -1], [0, +2], [+1, +2]],    # R -> 0
+         [[0, 0], [+1, 0], [+1, -1], [0, +2], [+1, +2]],    # R -> 2
+         [[0, 0], [-1, 0], [-1, +1], [0, -2], [-1, -2]],    # 2 -> R
+         [[0, 0], [+1, 0], [+1, +1], [0, -2], [+1, -2]],    # 2 -> L
+         [[0, 0], [-1, 0], [-1, -1], [0, +2], [-1, +2]],    # L -> 2
+         [[0, 0], [-1, 0], [-1, -1], [0, +2], [-1, +2]],    # L -> 0
+         [[0, 0], [+1, 0], [+1, +1], [0, -2], [+1, -2]]],   # 0 -> L
 
         # I Shape
         [[[0, 0], [-2, 0], [+1, 0], [-2, -1], [+1, +2]],
@@ -117,7 +117,7 @@ class Tetromino():
     def __init__(self, piece_center):
 
         self.center = piece_center
-        self.orientation = Orientation.UP
+        self.orientation = Orientation.SPAWN
         self.identity = Shape.NoShape
         self.coordinates = Tetromino.coordinate_table[0][0]
 
@@ -127,7 +127,7 @@ class Tetromino():
 
         value = random.randint(1, 7)
         self.identity = Shape(value)
-        self.orientation = Orientation.UP
+        self.orientation = Orientation.SPAWN
         self.coordinates = Tetromino.coordinate_table[value][0]
         self.move_to_center()
 
@@ -150,10 +150,18 @@ class Tetromino():
             temp_coordinates.append([positions[0] + self.center[0], positions[1] + self.center[1]])
         self.coordinates = temp_coordinates
 
-    def rotate_left(self):
+    def rotate_right(self):
         self.orientation = Orientation(self.orientation.next())
         self.rotate()
 
-    def rotate_right(self):
+    def rotate_left(self):
         self.orientation = Orientation(self.orientation.prev())
         self.rotate()
+
+    def wall_kick_offset(self, direction):
+
+        table_num = 1 if self.identity.value == Shape.IShape else 0
+        case_adjust = 0 if direction == 1 else -1
+        case_num = (self.orientation.value * 2) + case_adjust
+        return Tetromino.kick_table[table_num][case_num]
+

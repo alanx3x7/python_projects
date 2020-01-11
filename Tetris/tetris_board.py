@@ -17,10 +17,14 @@ class TetrisBoard(QWidget):
 
         self.width = 10
         self.height = 20
-        self.speed = 300
+        self.speed = 1000
         self.cell_side_length = 30
         self.start_pos = (4, 0)
         self.colour_table = [0x000000, 0xFF0000, 0x00FF00, 0x00FFFF, 0x800080, 0xFFFF00, 0xFFA500, 0x0000FF]
+
+        # Key press things
+        self.up_key_last_released = False
+        self.up_key_start = time.time()
 
         self.x_cell_corners = np.zeros(10)
         for x in range(self.width):
@@ -134,7 +138,7 @@ class TetrisBoard(QWidget):
             if new_x >= self.width or new_x < 0 or new_y >= self.height:
                 return False
 
-            if self.board[new_y, new_x] != 0:
+            if new_y > -1 and self.board[new_y, new_x] != 0:
                 return False
 
         return True
@@ -156,17 +160,23 @@ class TetrisBoard(QWidget):
 
     def rotate_floating_piece(self, direction):
         if direction == 1:
+            self.floating.rotate_right()
+            is_valid = False
+            for positions in self.floating.wall_kick_offset(1):
+                if self.check_floating_valid(positions[0], positions[1]):
+                    print(positions)
+                    self.move_floating_piece(positions[0], positions[1])
+                    self.update()
+                    is_valid = True
+                    break
+            if not is_valid:
+                self.floating.rotate_left()
+        elif direction == -1:
             self.floating.rotate_left()
             if self.check_floating_valid(0, 0):
                 self.update()
             else:
                 self.floating.rotate_right()
-        elif direction == -1:
-            self.floating.rotate_right()
-            if self.check_floating_valid(0, 0):
-                self.update()
-            else:
-                self.floating.rotate_left()
 
     def keyPressEvent(self, event):
 
@@ -179,11 +189,18 @@ class TetrisBoard(QWidget):
         elif key == Qt.Key_Down:
             self.move_floating_piece(0, 1)
         elif key == Qt.Key_Up:
-            self.rotate_floating_piece(1)
+            if time.time() - self.up_key_last_released > 0.025:
+                self.rotate_floating_piece(1)
         elif key == Qt.Key_Space:
             self.drop_floating()
 
         self.update()
+
+    def keyReleaseEvent(self, event):
+        key = event.key()
+
+        if key == Qt.Key_Up:
+            self.up_key_last_released = time.time()
 
     def clear_full_rows(self):
 
