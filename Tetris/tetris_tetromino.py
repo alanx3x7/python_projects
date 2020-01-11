@@ -92,6 +92,28 @@ class Tetromino():
          [[-1, 1],   [0, 1],     [0, 0],     [0, -1]]]
     )
 
+    kick_table = (
+        # J, L, S, T, Z Shape
+        [[[0, 0], [-1, 0], [-1, +1], [0, -2], [-1, -2]],
+         [[0, 0], [+1, 0], [+1, -1], [0, +2], [+1, +2]],
+         [[0, 0], [+1, 0], [+1, -1], [0, +2], [+1, +2]],
+         [[0, 0], [-1, 0], [-1, +1], [0, -2], [-1, -2]],
+         [[0, 0], [+1, 0], [+1, +1], [0, -2], [+1, -2]],
+         [[0, 0], [-1, 0], [-1, -1], [0, +2], [-1, +2]],
+         [[0, 0], [-1, 0], [-1, -1], [0, +2], [-1, +2]],
+         [[0, 0], [+1, 0], [+1, +1], [0, -2], [+1, -2]]],
+
+        # I Shape
+        [[[0, 0], [-2, 0], [+1, 0], [-2, -1], [+1, +2]],
+         [[0, 0], [+2, 0], [-1, 0], [+2, +1], [-1, -2]],
+         [[0, 0], [-1, 0], [+2, 0], [-1, +2], [+2, -1]],
+         [[0, 0], [+1, 0], [-2, 0], [+1, -2], [-2, +1]],
+         [[0, 0], [+2, 0], [-1, 0], [+2, +1], [-1, -2]],
+         [[0, 0], [-2, 0], [+1, 0], [-2, -1], [+1, +2]],
+         [[0, 0], [+1, 0], [-2, 0], [+1, -2], [-2, +1]],
+         [[0, 0], [-1, 0], [+2, 0], [-1, +2], [+2, -1]]]
+    )
+
     def __init__(self, piece_center):
 
         self.center = piece_center
@@ -122,9 +144,16 @@ class Tetromino():
         self.update_center(self.center[0] + x, self.center[1] + y)
         self.move_to_center()
 
-    def rotate_left(self):
-        self.orientation = Orientation(self.orientation.next())
+    def rotate(self):
         temp_coordinates = []
         for positions in Tetromino.coordinate_table[self.identity.value][self.orientation.value]:
             temp_coordinates.append([positions[0] + self.center[0], positions[1] + self.center[1]])
         self.coordinates = temp_coordinates
+
+    def rotate_left(self):
+        self.orientation = Orientation(self.orientation.next())
+        self.rotate()
+
+    def rotate_right(self):
+        self.orientation = Orientation(self.orientation.prev())
+        self.rotate()

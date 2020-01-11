@@ -92,7 +92,6 @@ class TetrisBoard(QWidget):
             # else:
             #     self.oneLineDown()
             self.gravity()
-            print(self.floating.identity)
 
         else:
             super(TetrisBoard, self).timerEvent(event)
@@ -102,6 +101,7 @@ class TetrisBoard(QWidget):
             self.update()
         else:
             self.fix_floating_piece()
+            self.clear_full_rows()
             if self.create_new_piece():
                 self.update()
             else:
@@ -111,6 +111,8 @@ class TetrisBoard(QWidget):
         while self.move_floating_piece(0, 1):
             self.update()
         self.fix_floating_piece()
+        self.clear_full_rows()
+
         if self.create_new_piece():
             self.update()
         else:
@@ -155,7 +157,16 @@ class TetrisBoard(QWidget):
     def rotate_floating_piece(self, direction):
         if direction == 1:
             self.floating.rotate_left()
-            self.update()
+            if self.check_floating_valid(0, 0):
+                self.update()
+            else:
+                self.floating.rotate_right()
+        elif direction == -1:
+            self.floating.rotate_right()
+            if self.check_floating_valid(0, 0):
+                self.update()
+            else:
+                self.floating.rotate_left()
 
     def keyPressEvent(self, event):
 
@@ -173,3 +184,14 @@ class TetrisBoard(QWidget):
             self.drop_floating()
 
         self.update()
+
+    def clear_full_rows(self):
+
+        lines_to_clear = []
+        for y in range(self.height):
+            if np.count_nonzero(self.board[y, :]) == self.width:
+                lines_to_clear.append(y)
+
+        for line in lines_to_clear:
+            for y in range(line - 1, -1, -1):
+                self.board[y + 1, :] = self.board[y, :]
