@@ -47,7 +47,7 @@ class TetrisMainWindow(QMainWindow):
         f.setPointSize(10)
         f.setWeight(75)
         self.game_state_label.setFont(f)
-        self.game_state_label.setText("Play!")
+        self.game_state_label.setText("Press Enter to Start")
         vb_right.addWidget(self.game_state_label, 0, Qt.Alignment())
 
         # Create the board

@@ -14,6 +14,7 @@ class Status(IntEnum):
     PAUSED = 0
     PLAYING = 1
     GAMEOVER = 2
+    NOT_BEGUN = 3
 
 
 class TetrisBoard(QWidget):
@@ -31,7 +32,7 @@ class TetrisBoard(QWidget):
         self.start_pos = (4, 0)
         self.colour_table = [0x000000, 0xFF0000, 0x00FF00, 0x00FFFF, 0x800080, 0xFFFF00, 0xFFA500, 0x0000FF]
 
-        self.game_status = Status.PAUSED
+        self.game_status = Status.NOT_BEGUN
 
         # Key press things
         self.up_key_last_released = False
@@ -49,7 +50,7 @@ class TetrisBoard(QWidget):
 
         self.frame_timer = QBasicTimer()
 
-        self.floating = Tetromino(self.start_pos)
+        self.floating = None
         self.setFocusPolicy(Qt.StrongFocus)
 
         self.soft_drop_timer = QBasicTimer()
@@ -57,13 +58,13 @@ class TetrisBoard(QWidget):
 
         QApplication.processEvents()
 
-        self.start_game()
-
     def paintEvent(self, event):
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
         self.paintFixed(p)
-        self.paintFloat(p)
+
+        if self.floating is not None:
+            self.paintFloat(p)
 
     def paintFixed(self, p):
 
@@ -97,6 +98,12 @@ class TetrisBoard(QWidget):
                 p.drawRect(center_x, center_y, 30, 30)
 
     def start_game(self):
+        self.floating = Tetromino(self.start_pos)
+        self.game_status = Status.PLAYING
+        self.changed_game_status.emit(self.game_status)
+        self.frame_timer.start(self.speed, self)
+
+    def resume_game(self):
         self.game_status = Status.PLAYING
         self.changed_game_status.emit(self.game_status)
         self.frame_timer.start(self.speed, self)
@@ -203,9 +210,12 @@ class TetrisBoard(QWidget):
 
         key = event.key()
 
+        if self.game_status == Status.NOT_BEGUN and key == Qt.Key_Return:
+            self.start_game()
+
         if key == Qt.Key_P:
             if self.game_status == Status.PAUSED:
-                self.start_game()
+                self.resume_game()
             elif self.game_status == Status.PLAYING:
                 self.pause_game()
 
