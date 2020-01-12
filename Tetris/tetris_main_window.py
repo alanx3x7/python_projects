@@ -35,11 +35,12 @@ class TetrisMainWindow(QMainWindow):
 
         self.width = 10
         self.height = 20
-        self.resize(850, 630)
+        self.resize(950, 630)
 
         self.window = QWidget(*args, **kwargs)
         vb_left = QVBoxLayout()
         vb_right = QVBoxLayout()
+        vb_next = QVBoxLayout()
         hb = QHBoxLayout()
 
         # Create the game status label
@@ -59,17 +60,29 @@ class TetrisMainWindow(QMainWindow):
         self.shift_piece_label.setText("None")
         vb_right.addWidget(self.shift_piece_label, 0, Qt.Alignment())
 
-        # Create a window to display the shifted piece
-        self.shift_piece_display = TetrominoDisplay()
-
         # Create the board
         self.game_board = TetrisBoard()
         self.game_board.changed_game_status.connect(self.update_status_label)
         self.game_board.shifted_tetromino.connect(self.update_shift_piece)
+        self.game_board.next_tetromino_update.connect(self.update_next_pieces)
         vb_left.addWidget(self.game_board)
 
+        # Create a window to display the shifted piece
+        self.shift_piece_display = TetrominoDisplay()
         hb.addWidget(self.shift_piece_display, 1, Qt.Alignment())
+
+        # Create windows to display next pieces
+        self.next_piece_display_1 = TetrominoDisplay()
+        self.next_piece_display_2 = TetrominoDisplay()
+        self.next_piece_display_3 = TetrominoDisplay()
+        self.next_piece_display_4 = TetrominoDisplay()
+        vb_next.addWidget(self.next_piece_display_1, 1, Qt.Alignment())
+        vb_next.addWidget(self.next_piece_display_2, 1, Qt.Alignment())
+        vb_next.addWidget(self.next_piece_display_3, 1, Qt.Alignment())
+        vb_next.addWidget(self.next_piece_display_4, 3, Qt.Alignment())
+
         hb.addLayout(vb_left, 2)
+        hb.addLayout(vb_next, 1)
         hb.addLayout(vb_right, 2)
 
         self.window.setLayout(hb)
@@ -82,3 +95,9 @@ class TetrisMainWindow(QMainWindow):
     def update_shift_piece(self, piece):
         self.shift_piece_label.setText(piece.name)
         self.shift_piece_display.update_identity(piece)
+
+    def update_next_pieces(self, next_pieces):
+        self.next_piece_display_1.update_identity(next_pieces[0])
+        self.next_piece_display_2.update_identity(next_pieces[1])
+        self.next_piece_display_3.update_identity(next_pieces[2])
+        self.next_piece_display_4.update_identity(next_pieces[3])

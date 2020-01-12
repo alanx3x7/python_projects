@@ -6,6 +6,7 @@ from PyQt5.QtCore import *
 from enum import IntEnum
 import numpy as np
 import time
+import random
 
 from tetris_tetromino import Tetromino
 from tetris_enums import Direction
@@ -24,6 +25,7 @@ class TetrisBoard(QWidget):
 
     changed_game_status = pyqtSignal(Status)
     shifted_tetromino = pyqtSignal(Shape)
+    next_tetromino_update = pyqtSignal(list)
 
     def __init__(self, *args, **kwargs):
 
@@ -59,6 +61,8 @@ class TetrisBoard(QWidget):
         self.soft_drop_timer_speed = 500
 
         self.floating = None
+        self.num_next_pieces = 4
+        self.next_pieces = [Shape.NoShape] * self.num_next_pieces
         self.shifted = None
         self.shifted_this_piece = False
 
@@ -118,6 +122,11 @@ class TetrisBoard(QWidget):
                 p.drawRect(center_x, center_y, 30, 30)
 
     def start_game(self):
+
+        for i in range(self.num_next_pieces):
+            self.next_pieces[i] = Shape(random.randint(1, 7))
+        self.next_tetromino_update.emit(self.next_pieces)
+
         self.floating = Tetromino(self.start_pos)
         self.game_status = Status.PLAYING
         self.changed_game_status.emit(self.game_status)
@@ -221,8 +230,13 @@ class TetrisBoard(QWidget):
                 self.board[positions[1], positions[0]] = self.floating.identity.value
 
     def create_new_piece(self):
-        self.floating.update_center(self.start_pos[0], self.start_pos[1])
-        self.floating.random_assign_shape()
+        self.floating = Tetromino(self.start_pos, self.next_pieces[0])
+        for i in range(self.num_next_pieces):
+            if i != self.num_next_pieces - 1:
+                self.next_pieces[i] = self.next_pieces[i + 1]
+            else:
+                self.next_pieces[i] = Shape(random.randint(1, 7))
+        self.next_tetromino_update.emit(self.next_pieces)
 
         for positions in self.floating.coordinates:
             if positions[0] > -1 and positions[1] > -1:
