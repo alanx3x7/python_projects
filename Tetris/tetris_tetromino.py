@@ -129,3 +129,10 @@ class Tetromino:
         case_adjust = direction.value
         case_num = (self.orientation.value * 2) + case_adjust
         return Tetromino.kick_table[table_num][case_num]
+
+    def __copy__(self):
+        tetromino_copy = Tetromino(self.center)
+        tetromino_copy.identity = self.identity
+        tetromino_copy.orientation = self.orientation
+        tetromino_copy.coordinates = self.coordinates
+        return tetromino_copy

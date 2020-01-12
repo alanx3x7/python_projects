@@ -50,9 +50,17 @@ class TetrisMainWindow(QMainWindow):
         self.game_state_label.setText("Press Enter to Start")
         vb_right.addWidget(self.game_state_label, 0, Qt.Alignment())
 
+        # Create shift piece label (temporary)
+        self.shift_piece_label = QLabel()
+        self.shift_piece_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.shift_piece_label.setFont(f)
+        self.shift_piece_label.setText("None")
+        vb_right.addWidget(self.shift_piece_label, 0, Qt.Alignment())
+
         # Create the board
         self.game_board = TetrisBoard()
         self.game_board.changed_game_status.connect(self.update_status_label)
+        self.game_board.shifted_tetromino.connect(self.update_shift_piece)
         vb_left.addWidget(self.game_board)
 
         hb.addLayout(vb_left)
@@ -65,3 +73,5 @@ class TetrisMainWindow(QMainWindow):
     def update_status_label(self, new_game_state):
         self.game_state_label.setText(new_game_state.name)
 
+    def update_shift_piece(self, piece):
+        self.shift_piece_label.setText(piece.name)

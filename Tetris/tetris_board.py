@@ -9,6 +9,8 @@ import time
 
 from tetris_tetromino import Tetromino
 from tetris_enums import Direction
+from tetris_enums import Orientation
+from tetris_enums import Shape
 
 
 class Status(IntEnum):
@@ -21,6 +23,7 @@ class Status(IntEnum):
 class TetrisBoard(QWidget):
 
     changed_game_status = pyqtSignal(Status)
+    shifted_tetromino = pyqtSignal(Shape)
 
     def __init__(self, *args, **kwargs):
 
@@ -50,12 +53,14 @@ class TetrisBoard(QWidget):
         self.board = np.zeros((self.height, self.width))
 
         self.frame_timer = QBasicTimer()
-
-        self.floating = None
         self.setFocusPolicy(Qt.StrongFocus)
 
         self.soft_drop_timer = QBasicTimer()
         self.soft_drop_timer_speed = 500
+
+        self.floating = None
+        self.shifted = None
+        self.shifted_this_piece = False
 
         # DAS and ARR Control
         self.das_speed = 133
@@ -178,6 +183,7 @@ class TetrisBoard(QWidget):
             self.fix_floating_piece()
             self.clear_full_rows()
             self.create_new_piece()
+            self.shifted_this_piece = False
 
     def drop_floating(self):
         while self.move_floating_piece(0, 1):
@@ -185,6 +191,7 @@ class TetrisBoard(QWidget):
         self.fix_floating_piece()
         self.clear_full_rows()
         self.create_new_piece()
+        self.shifted_this_piece = False
 
     def move_floating_piece(self, x, y):
 
@@ -286,6 +293,10 @@ class TetrisBoard(QWidget):
             if not event.isAutoRepeat():
                 self.drop_floating()
 
+        elif key == Qt.Key_Shift:
+            if not event.isAutoRepeat():
+                self.handle_shift_key()
+
         self.update()
 
     def keyReleaseEvent(self, event):
@@ -314,3 +325,21 @@ class TetrisBoard(QWidget):
             for y in range(line - 1, -1, -1):
                 self.board[y + 1, :] = self.board[y, :]
                 self.board[0, :] = np.zeros(self.width)
+
+    def handle_shift_key(self):
+
+        if not self.shifted_this_piece:
+            if self.shifted is None:
+                self.shifted = self.floating.__copy__()
+                self.create_new_piece()
+                self.shifted_this_piece = True
+                self.shifted_tetromino.emit(self.shifted.identity)
+            else:
+                temp_tetromino = self.shifted.__copy__()
+                self.shifted = self.floating.__copy__()
+                self.floating = temp_tetromino
+                self.floating.update_center(self.start_pos[0], self.start_pos[1])
+                self.floating.move_to_center()
+                self.floating.orientation = Orientation.SPAWN
+                self.shifted_this_piece = True
+                self.shifted_tetromino.emit(self.shifted.identity)
