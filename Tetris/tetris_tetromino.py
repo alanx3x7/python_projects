@@ -80,20 +80,23 @@ class Tetromino:
          [[0, 0], [-1, 0], [+2, 0], [-1, +2], [+2, -1]]]
     )
 
-    def __init__(self, piece_center):
+    def __init__(self, piece_center, shape=None):
 
         self.center = piece_center
         self.orientation = Orientation.SPAWN
-        self.identity = Shape.NoShape
-        self.coordinates = Tetromino.coordinate_table[0][0]
 
-        self.random_assign_shape()
+        if shape is None:
+            self.identity = Shape.NoShape
+            self.coordinates = Tetromino.coordinate_table[0][0]
+            self.random_assign_shape()
+        else:
+            self.identity = shape
+            self.coordinates = Tetromino.coordinate_table[shape.value][0]
+            self.move_to_center()
 
     def random_assign_shape(self):
-
         value = random.randint(1, 7)
         self.identity = Shape(value)
-        self.orientation = Orientation.SPAWN
         self.coordinates = Tetromino.coordinate_table[value][0]
         self.move_to_center()
 

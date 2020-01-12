@@ -35,7 +35,7 @@ class TetrisMainWindow(QMainWindow):
 
         self.width = 10
         self.height = 20
-        self.resize(650, 630)
+        self.resize(850, 630)
 
         self.window = QWidget(*args, **kwargs)
         vb_left = QVBoxLayout()
@@ -61,7 +61,6 @@ class TetrisMainWindow(QMainWindow):
 
         # Create a window to display the shifted piece
         self.shift_piece_display = TetrominoDisplay()
-        vb_right.addWidget(self.shift_piece_display, 0, Qt.Alignment())
 
         # Create the board
         self.game_board = TetrisBoard()
@@ -69,8 +68,9 @@ class TetrisMainWindow(QMainWindow):
         self.game_board.shifted_tetromino.connect(self.update_shift_piece)
         vb_left.addWidget(self.game_board)
 
-        hb.addLayout(vb_left)
-        hb.addLayout(vb_right)
+        hb.addWidget(self.shift_piece_display, 1, Qt.Alignment())
+        hb.addLayout(vb_left, 2)
+        hb.addLayout(vb_right, 2)
 
         self.window.setLayout(hb)
         self.setCentralWidget(self.window)

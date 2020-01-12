@@ -330,16 +330,13 @@ class TetrisBoard(QWidget):
 
         if not self.shifted_this_piece:
             if self.shifted is None:
-                self.shifted = self.floating.__copy__()
+                self.shifted = self.floating.identity
                 self.create_new_piece()
                 self.shifted_this_piece = True
-                self.shifted_tetromino.emit(self.shifted.identity)
+                self.shifted_tetromino.emit(self.shifted)
             else:
-                temp_tetromino = self.shifted.__copy__()
-                self.shifted = self.floating.__copy__()
-                self.floating = temp_tetromino
-                self.floating.update_center(self.start_pos[0], self.start_pos[1])
-                self.floating.move_to_center()
-                self.floating.orientation = Orientation.SPAWN
+                temp_tetromino = self.shifted
+                self.shifted = self.floating.identity
+                self.floating = Tetromino(self.start_pos, temp_tetromino)
                 self.shifted_this_piece = True
-                self.shifted_tetromino.emit(self.shifted.identity)
+                self.shifted_tetromino.emit(self.shifted)
