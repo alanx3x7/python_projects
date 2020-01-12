@@ -15,6 +15,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
 from tetris_board import TetrisBoard
+from tetris_tetromino_display_box import TetrominoDisplay
+
 from tetris_board import Status
 
 
@@ -57,6 +59,10 @@ class TetrisMainWindow(QMainWindow):
         self.shift_piece_label.setText("None")
         vb_right.addWidget(self.shift_piece_label, 0, Qt.Alignment())
 
+        # Create a window to display the shifted piece
+        self.shift_piece_display = TetrominoDisplay()
+        vb_right.addWidget(self.shift_piece_display, 0, Qt.Alignment())
+
         # Create the board
         self.game_board = TetrisBoard()
         self.game_board.changed_game_status.connect(self.update_status_label)
@@ -75,3 +81,4 @@ class TetrisMainWindow(QMainWindow):
 
     def update_shift_piece(self, piece):
         self.shift_piece_label.setText(piece.name)
+        self.shift_piece_display.update_identity(piece)

@@ -42,11 +42,11 @@ class TetrisBoard(QWidget):
         self.up_key_last_released = False
         self.up_key_start = time.time()
 
-        self.x_cell_corners = np.zeros(10)
+        self.x_cell_corners = np.zeros(self.width)
         for x in range(self.width):
             self.x_cell_corners[x] = x * self.cell_side_length + 5
 
-        self.y_cell_corners = np.zeros(20)
+        self.y_cell_corners = np.zeros(self.height)
         for y in range(self.height):
             self.y_cell_corners[y] = y * self.cell_side_length + 5
 
