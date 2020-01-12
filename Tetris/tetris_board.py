@@ -57,9 +57,19 @@ class TetrisBoard(QWidget):
         self.soft_drop_timer = QBasicTimer()
         self.soft_drop_timer_speed = 500
 
+        # DAS and ARR Control
+        self.das_speed = 200
+        self.arr_speed = 20
+
+        # Left key move timers
+        self.left_move_arr_timer = QBasicTimer()
+        self.left_move_das_timer = QBasicTimer()
+        self.left_key_enter_das = False
+
+        # Right key move timers
         self.right_move_arr_timer = QBasicTimer()
-        self.das_speed = 400
-        self.arr_speed = 200
+        self.right_move_das_timer = QBasicTimer()
+        self.right_key_enter_das = False
 
         QApplication.processEvents()
 
@@ -133,6 +143,30 @@ class TetrisBoard(QWidget):
         elif event.timerId() == self.soft_drop_timer.timerId():
             self.drop_floating()
             self.soft_drop_timer.stop()
+
+        elif event.timerId() == self.left_move_arr_timer.timerId():
+            self.move_floating_piece(-1, 0)
+            self.update()
+
+        elif event.timerId() == self.left_move_das_timer.timerId():
+            if self.left_key_enter_das:
+                self.move_floating_piece(-1, 0)
+                self.update()
+                self.left_move_das_timer.stop()
+                self.left_key_enter_das = False
+                self.left_move_arr_timer.start(self.arr_speed, self)
+
+        elif event.timerId() == self.right_move_arr_timer.timerId():
+            self.move_floating_piece(1, 0)
+            self.update()
+
+        elif event.timerId() == self.right_move_das_timer.timerId():
+            if self.right_key_enter_das:
+                self.move_floating_piece(1, 0)
+                self.update()
+                self.right_move_das_timer.stop()
+                self.right_key_enter_das = False
+                self.right_move_arr_timer.start(self.arr_speed, self)
 
         else:
             super(TetrisBoard, self).timerEvent(event)
@@ -229,35 +263,17 @@ class TetrisBoard(QWidget):
             super(TetrisBoard, self).keyPressEvent(event)
             return
 
-
-
         if key == Qt.Key_Left:
             if not event.isAutoRepeat():
-                print("Left key pressed")
                 self.move_floating_piece(-1, 0)
-                self.left_previous_move_real = time.time()
-                self.left_previous_move_repeat = time.time()
-                self.left_key_pressed = False
-            elif not self.left_key_pressed and time.time() - self.left_previous_move_real > 0.5:
-                print("Autorepeated initial")
-                self.left_key_pressed = True
-                self.move_floating_piece(-1, 0)
-                self.left_previous_move_repeat = time.time()
-            elif time.time() - self.left_previous_move_repeat > 0.2 and self.left_key_pressed:
-                print("Autorepeat repeated")
-                self.left_key_pressed = True
-                self.move_floating_piece(-1, 0)
-                self.left_previous_move_repeat = time.time()
-
-
+                self.left_key_enter_das = True
+                self.left_move_das_timer.start(self.das_speed, self)
 
         elif key == Qt.Key_Right:
             if not event.isAutoRepeat():
                 self.move_floating_piece(1, 0)
-
-
-
-
+                self.right_key_enter_das = True
+                self.right_move_das_timer.start(self.das_speed, self)
 
         elif key == Qt.Key_Down:
             if not self.move_floating_piece(0, 1):
@@ -276,13 +292,19 @@ class TetrisBoard(QWidget):
 
         if key == Qt.Key_Up:
             self.up_key_last_released = time.time()
-            print("Up key released")
+            # print("Up key released")
+
         elif key == Qt.Key_Left:
             if not event.isAutoRepeat():
-                self.left_key_pressed = False
-                print("Left key real released")
-            else:
-                print("Left key autorepeat release")
+                self.left_key_enter_das = False
+                self.left_move_arr_timer.stop()
+                self.left_move_das_timer.stop()
+
+        elif key == Qt.Key_Right:
+            if not event.isAutoRepeat():
+                self.right_key_enter_das = False
+                self.right_move_arr_timer.stop()
+                self.right_move_das_timer.stop()
 
     def clear_full_rows(self):
 
