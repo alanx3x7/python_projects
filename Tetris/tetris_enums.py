@@ -3,8 +3,8 @@ from enum import IntEnum
 
 
 class Direction(IntEnum):
-    LEFT = 0
-    RIGHT = -1
+    RIGHT = 0
+    LEFT = -1
 
 
 # List of orientations
