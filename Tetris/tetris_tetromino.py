@@ -1,46 +1,12 @@
 
-from enum import IntEnum
 import random
 
-# PyQt5 imports
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from tetris_enums import Direction
+from tetris_enums import Shape
+from tetris_enums import Orientation
 
 
-# List of orientations
-class Orientation(IntEnum):
-    SPAWN = 0
-    RIGHT = 1
-    TWO = 2
-    LEFT = 3
-
-    def next(self):
-        new_index = self.value + 1
-        if new_index > 3:
-            new_index = 0
-        return new_index
-
-    def prev(self):
-        new_index = self.value - 1
-        if new_index < 0:
-            new_index = 3
-        return new_index
-
-
-# List of colours
-class Shape(IntEnum):
-    NoShape = 0
-    ZShape = 1
-    SShape = 2
-    IShape = 3
-    TShape = 4
-    OShape = 5
-    LShape = 6
-    JShape = 7
-
-
-class Tetromino():
+class Tetromino:
 
     coordinate_table = (
         # No Shape
@@ -160,7 +126,6 @@ class Tetromino():
 
     def wall_kick_offset(self, direction):
         table_num = 1 if self.identity.value == Shape.IShape else 0
-        case_adjust = 0 if direction == 1 else -1
+        case_adjust = direction.value
         case_num = (self.orientation.value * 2) + case_adjust
         return Tetromino.kick_table[table_num][case_num]
-

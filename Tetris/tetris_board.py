@@ -8,6 +8,7 @@ import numpy as np
 import time
 
 from tetris_tetromino import Tetromino
+from tetris_enums import Direction
 
 
 class Status(IntEnum):
@@ -55,6 +56,10 @@ class TetrisBoard(QWidget):
 
         self.soft_drop_timer = QBasicTimer()
         self.soft_drop_timer_speed = 500
+
+        self.right_move_arr_timer = QBasicTimer()
+        self.das_speed = 400
+        self.arr_speed = 200
 
         QApplication.processEvents()
 
@@ -188,10 +193,10 @@ class TetrisBoard(QWidget):
         self.update()
 
     def rotate_floating_piece(self, direction):
-        if direction == 1:
+        if direction == Direction.LEFT:
             self.floating.rotate_right()
             is_valid = False
-            for positions in self.floating.wall_kick_offset(1):
+            for positions in self.floating.wall_kick_offset(Direction.LEFT):
                 if self.check_floating_valid(positions[0], positions[1]):
                     self.move_floating_piece(positions[0], positions[1])
                     self.update()
@@ -199,7 +204,8 @@ class TetrisBoard(QWidget):
                     break
             if not is_valid:
                 self.floating.rotate_left()
-        elif direction == -1:
+
+        elif direction == Direction.RIGHT:
             self.floating.rotate_left()
             if self.check_floating_valid(0, 0):
                 self.update()
@@ -219,20 +225,47 @@ class TetrisBoard(QWidget):
             elif self.game_status == Status.PLAYING:
                 self.pause_game()
 
-        if self.game_status == Status.PAUSED or self.game_status == Status.GAMEOVER:
+        if self.game_status == Status.PAUSED or self.game_status == Status.GAMEOVER or self.game_status == Status.NOT_BEGUN:
             super(TetrisBoard, self).keyPressEvent(event)
             return
 
+
+
         if key == Qt.Key_Left:
-            self.move_floating_piece(-1, 0)
+            if not event.isAutoRepeat():
+                print("Left key pressed")
+                self.move_floating_piece(-1, 0)
+                self.left_previous_move_real = time.time()
+                self.left_previous_move_repeat = time.time()
+                self.left_key_pressed = False
+            elif not self.left_key_pressed and time.time() - self.left_previous_move_real > 0.5:
+                print("Autorepeated initial")
+                self.left_key_pressed = True
+                self.move_floating_piece(-1, 0)
+                self.left_previous_move_repeat = time.time()
+            elif time.time() - self.left_previous_move_repeat > 0.2 and self.left_key_pressed:
+                print("Autorepeat repeated")
+                self.left_key_pressed = True
+                self.move_floating_piece(-1, 0)
+                self.left_previous_move_repeat = time.time()
+
+
+
         elif key == Qt.Key_Right:
-            self.move_floating_piece(1, 0)
+            if not event.isAutoRepeat():
+                self.move_floating_piece(1, 0)
+
+
+
+
+
         elif key == Qt.Key_Down:
             if not self.move_floating_piece(0, 1):
                 self.soft_drop_timer.start(self.soft_drop_timer_speed, self)
         elif key == Qt.Key_Up:
+            print("Up key pressed")
             if time.time() - self.up_key_last_released > 0.025:
-                self.rotate_floating_piece(1)
+                self.rotate_floating_piece(Direction.LEFT)
         elif key == Qt.Key_Space:
             self.drop_floating()
 
@@ -243,6 +276,13 @@ class TetrisBoard(QWidget):
 
         if key == Qt.Key_Up:
             self.up_key_last_released = time.time()
+            print("Up key released")
+        elif key == Qt.Key_Left:
+            if not event.isAutoRepeat():
+                self.left_key_pressed = False
+                print("Left key real released")
+            else:
+                print("Left key autorepeat release")
 
     def clear_full_rows(self):
 
