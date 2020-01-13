@@ -4,11 +4,6 @@
 # Version: 1.0
 # Last Updated: 2020/01/08
 
-# Typical imports
-import random
-import time
-import numpy as np
-
 # PyQt5 specific imports
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -16,8 +11,6 @@ from PyQt5.QtGui import *
 
 from tetris_board import TetrisBoard
 from tetris_tetromino_display_box import TetrominoDisplay
-
-from tetris_board import Status
 
 
 class TetrisMainWindow(QMainWindow):

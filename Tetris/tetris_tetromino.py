@@ -1,7 +1,6 @@
 
 import random
 
-from tetris_enums import Direction
 from tetris_enums import Shape
 from tetris_enums import Orientation
 
@@ -104,20 +103,18 @@ class Tetromino:
         self.center = (x, y)
 
     def move_to_center(self):
-        temp_coordinates = []
+        self.coordinates = []
         for positions in Tetromino.coordinate_table[self.identity.value][self.orientation.value]:
-            temp_coordinates.append([positions[0] + self.center[0], positions[1] + self.center[1]])
-        self.coordinates = temp_coordinates
+            self.coordinates.append([positions[0] + self.center[0], positions[1] + self.center[1]])
 
     def move_by(self, x, y):
         self.update_center(self.center[0] + x, self.center[1] + y)
         self.move_to_center()
 
     def rotate(self):
-        temp_coordinates = []
+        self.coordinates = []
         for positions in Tetromino.coordinate_table[self.identity.value][self.orientation.value]:
-            temp_coordinates.append([positions[0] + self.center[0], positions[1] + self.center[1]])
-        self.coordinates = temp_coordinates
+            self.coordinates.append([positions[0] + self.center[0], positions[1] + self.center[1]])
 
     def rotate_right(self):
         self.orientation = Orientation(self.orientation.next())

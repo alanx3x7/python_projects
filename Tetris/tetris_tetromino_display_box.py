@@ -3,11 +3,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
-import numpy as np
-
-from tetris_tetromino import Tetromino
-from tetris_enums import Shape
-
 
 class TetrominoDisplay(QWidget):
     coordinate_table = (
