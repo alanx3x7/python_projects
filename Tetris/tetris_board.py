@@ -25,6 +25,7 @@ class TetrisBoard(QWidget):
     changed_game_status = pyqtSignal(Status)
     shifted_tetromino = pyqtSignal(Shape)
     next_tetromino_update = pyqtSignal(list)
+    lines_cleared = pyqtSignal(int)
 
     def __init__(self, *args, **kwargs):
 
@@ -32,6 +33,7 @@ class TetrisBoard(QWidget):
 
         self.width = 10
         self.height = 20
+
         self.speed = 1000
         self.cell_side_length = 30
         self.start_pos = (4, 0)
@@ -53,7 +55,7 @@ class TetrisBoard(QWidget):
 
         self.board = np.zeros((self.height, self.width))
 
-        self.frame_timer = QBasicTimer()
+        self.gravity_timer = QBasicTimer()
         self.setFocusPolicy(Qt.StrongFocus)
 
         self.soft_drop_timer = QBasicTimer()
@@ -70,15 +72,19 @@ class TetrisBoard(QWidget):
         self.das_speed = 133
         self.arr_speed = 20
 
+        self.was_interrupted = False
+
         # Left key move timers
         self.left_move_arr_timer = QBasicTimer()
         self.left_move_das_timer = QBasicTimer()
         self.left_key_enter_das = False
+        self.left_key_enter_arr = False
 
         # Right key move timers
         self.right_move_arr_timer = QBasicTimer()
         self.right_move_das_timer = QBasicTimer()
         self.right_key_enter_das = False
+        self.right_key_enter_arr = False
 
         QApplication.processEvents()
 
@@ -87,11 +93,11 @@ class TetrisBoard(QWidget):
         p.setRenderHint(QPainter.Antialiasing)
         self.paintFixed(p)
 
-        if self.floating is not None:
-            self.paintFloat(p)
-
         if self.ghost is not None:
             self.paintGhost(p)
+
+        if self.floating is not None:
+            self.paintFloat(p)
 
     def paintFixed(self, p):
 
@@ -141,27 +147,52 @@ class TetrisBoard(QWidget):
         self.update_ghost()
         self.game_status = Status.PLAYING
         self.changed_game_status.emit(self.game_status)
-        self.frame_timer.start(self.speed, self)
+        self.gravity_timer.start(self.speed, self)
 
     def resume_game(self):
         self.game_status = Status.PLAYING
         self.changed_game_status.emit(self.game_status)
-        self.frame_timer.start(self.speed, self)
+        self.gravity_timer.start(self.speed, self)
 
     def pause_game(self):
         self.game_status = Status.PAUSED
         self.changed_game_status.emit(self.game_status)
-        self.frame_timer.stop()
+        self.gravity_timer.stop()
 
     def end_game(self):
         self.game_status = Status.GAMEOVER
         self.changed_game_status.emit(self.game_status)
-        self.frame_timer.stop()
+        self.gravity_timer.stop()
 
     def timerEvent(self, event):
 
-        if event.timerId() == self.frame_timer.timerId():
+        if event.timerId() == self.left_move_arr_timer.timerId():
+            self.move_floating_piece(-1, 0)
+            self.update()
 
+        elif event.timerId() == self.right_move_arr_timer.timerId():
+            self.move_floating_piece(1, 0)
+            self.update()
+
+        elif event.timerId() == self.left_move_das_timer.timerId():
+            if self.left_key_enter_das:
+                self.left_move_arr_timer.start(self.arr_speed, Qt.PreciseTimer, self)
+                self.left_move_das_timer.stop()
+                self.left_key_enter_das = False
+                self.left_key_enter_arr = True
+                self.move_floating_piece(-1, 0)
+                self.update()
+
+        elif event.timerId() == self.right_move_das_timer.timerId():
+            if self.right_key_enter_das:
+                self.right_move_arr_timer.start(self.arr_speed, Qt.PreciseTimer, self)
+                self.right_move_das_timer.stop()
+                self.right_key_enter_das = False
+                self.right_key_enter_arr = True
+                self.move_floating_piece(1, 0)
+                self.update()
+
+        elif event.timerId() == self.gravity_timer.timerId():
             if not self.soft_drop_timer.isActive():
                 self.gravity()
 
@@ -169,30 +200,6 @@ class TetrisBoard(QWidget):
             self.drop_floating()
             self.update()
             self.soft_drop_timer.stop()
-
-        elif event.timerId() == self.left_move_arr_timer.timerId():
-            self.move_floating_piece(-1, 0)
-            self.update()
-
-        elif event.timerId() == self.left_move_das_timer.timerId():
-            if self.left_key_enter_das:
-                self.left_move_arr_timer.start(self.arr_speed, self)
-                self.left_move_das_timer.stop()
-                self.left_key_enter_das = False
-                self.move_floating_piece(-1, 0)
-                self.update()
-
-        elif event.timerId() == self.right_move_arr_timer.timerId():
-            self.move_floating_piece(1, 0)
-            self.update()
-
-        elif event.timerId() == self.right_move_das_timer.timerId():
-            if self.right_key_enter_das:
-                self.right_move_arr_timer.start(self.arr_speed, self)
-                self.right_move_das_timer.stop()
-                self.right_key_enter_das = False
-                self.move_floating_piece(1, 0)
-                self.update()
 
         else:
             super(TetrisBoard, self).timerEvent(event)
@@ -216,16 +223,16 @@ class TetrisBoard(QWidget):
 
     def move_floating_piece(self, x, y, ghost_update=False):
 
-        if self.check_floating_valid(x, y):
-            self.floating.move_by(x, y)
+        if self.try_move_floating(x, y):
             if not ghost_update:
                 self.update_ghost()
             return True
         else:
             return False
 
-    def check_floating_valid(self, x, y):
+    def try_move_floating(self, x, y):
 
+        new_positions = []
         for positions in self.floating.coordinates:
             new_x = positions[0] + x
             new_y = positions[1] + y
@@ -235,6 +242,11 @@ class TetrisBoard(QWidget):
 
             if new_y > -1 and self.board[new_y, new_x] != 0:
                 return False
+
+            new_positions.append([new_x, new_y])
+
+        new_center = [self.floating.center[0] + x, self.floating.center[1] + y]
+        self.floating.move_to(new_center, new_positions)
 
         return True
 
@@ -270,8 +282,7 @@ class TetrisBoard(QWidget):
 
         is_valid = False
         for positions in self.floating.wall_kick_offset(direction):
-            if self.check_floating_valid(positions[0], positions[1]):
-                self.move_floating_piece(positions[0], positions[1])
+            if self.try_move_floating(positions[0], positions[1]):
                 is_valid = True
                 break
 
@@ -306,6 +317,13 @@ class TetrisBoard(QWidget):
         if key == Qt.Key_Left:
             if not event.isAutoRepeat():
                 self.left_key_enter_das = True
+
+                if self.right_key_enter_arr:
+                    self.right_key_enter_das = True
+                    self.right_key_enter_arr = False
+                    self.right_move_arr_timer.stop()
+                    self.right_move_das_timer.start(self.das_speed, Qt.PreciseTimer, self)
+
                 self.left_move_das_timer.start(self.das_speed, self)
                 self.move_floating_piece(-1, 0)
                 self.update()
@@ -313,6 +331,13 @@ class TetrisBoard(QWidget):
         elif key == Qt.Key_Right:
             if not event.isAutoRepeat():
                 self.right_key_enter_das = True
+
+                if self.left_key_enter_arr:
+                    self.left_key_enter_das = True
+                    self.left_key_enter_arr = False
+                    self.left_move_arr_timer.stop()
+                    self.left_move_das_timer.start(self.das_speed, Qt.PreciseTimer, self)
+
                 self.right_move_das_timer.start(self.das_speed, self)
                 self.move_floating_piece(1, 0)
                 self.update()
@@ -341,12 +366,14 @@ class TetrisBoard(QWidget):
         if key == Qt.Key_Left:
             if not event.isAutoRepeat():
                 self.left_key_enter_das = False
+                self.left_key_enter_arr = False
                 self.left_move_arr_timer.stop()
                 self.left_move_das_timer.stop()
 
         elif key == Qt.Key_Right:
             if not event.isAutoRepeat():
                 self.right_key_enter_das = False
+                self.right_key_enter_arr = False
                 self.right_move_arr_timer.stop()
                 self.right_move_das_timer.stop()
 
@@ -361,6 +388,8 @@ class TetrisBoard(QWidget):
             for y in range(line - 1, -1, -1):
                 self.board[y + 1, :] = self.board[y, :]
                 self.board[0, :] = np.zeros(self.width)
+
+        self.lines_cleared.emit(len(lines_to_clear))
 
     def handle_shift_key(self):
 

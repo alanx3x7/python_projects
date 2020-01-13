@@ -46,18 +46,20 @@ class TetrisMainWindow(QMainWindow):
         self.game_state_label.setText("Press Enter to Start")
         vb_right.addWidget(self.game_state_label, 0, Qt.Alignment())
 
-        # Create shift piece label (temporary)
-        self.shift_piece_label = QLabel()
-        self.shift_piece_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.shift_piece_label.setFont(f)
-        self.shift_piece_label.setText("None")
-        vb_right.addWidget(self.shift_piece_label, 0, Qt.Alignment())
+        # Create lines cleared label
+        self.lines_cleared = 0
+        self.lines_cleared_label = QLabel()
+        self.lines_cleared_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.lines_cleared_label.setFont(f)
+        self.lines_cleared_label.setText(str(self.lines_cleared))
+        vb_right.addWidget(self.lines_cleared_label, 0, Qt.Alignment())
 
         # Create the board
         self.game_board = TetrisBoard()
         self.game_board.changed_game_status.connect(self.update_status_label)
         self.game_board.shifted_tetromino.connect(self.update_shift_piece)
         self.game_board.next_tetromino_update.connect(self.update_next_pieces)
+        self.game_board.lines_cleared.connect(self.update_lines_cleared)
         vb_left.addWidget(self.game_board)
 
         # Create a window to display the shifted piece
@@ -86,7 +88,6 @@ class TetrisMainWindow(QMainWindow):
         self.game_state_label.setText(new_game_state.name)
 
     def update_shift_piece(self, piece):
-        self.shift_piece_label.setText(piece.name)
         self.shift_piece_display.update_identity(piece)
 
     def update_next_pieces(self, next_pieces):
@@ -94,3 +95,7 @@ class TetrisMainWindow(QMainWindow):
         self.next_piece_display_2.update_identity(next_pieces[1])
         self.next_piece_display_3.update_identity(next_pieces[2])
         self.next_piece_display_4.update_identity(next_pieces[3])
+
+    def update_lines_cleared(self, lines):
+        self.lines_cleared += lines
+        self.lines_cleared_label.setText(str(self.lines_cleared))

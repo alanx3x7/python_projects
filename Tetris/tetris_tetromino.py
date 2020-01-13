@@ -111,6 +111,10 @@ class Tetromino:
         self.update_center(self.center[0] + x, self.center[1] + y)
         self.move_to_center()
 
+    def move_to(self, new_center, new_positions):
+        self.update_center(new_center[0], new_center[1])
+        self.coordinates = new_positions
+
     def rotate(self):
         self.coordinates = []
         for positions in Tetromino.coordinate_table[self.identity.value][self.orientation.value]:
