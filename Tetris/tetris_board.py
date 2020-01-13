@@ -59,6 +59,8 @@ class TetrisBoard(QWidget):
         self.setFocusPolicy(Qt.StrongFocus)
 
         self.soft_drop_timer_L1 = QBasicTimer()
+        self.soft_drop_timer_L2 = QBasicTimer()
+        self.soft_drop_timer_L3 = QBasicTimer()
         self.L1 = 2000
         self.L2 = 5000
         self.L3 = 20000
@@ -200,6 +202,14 @@ class TetrisBoard(QWidget):
 
         elif event.timerId() == self.soft_drop_timer_L1.timerId():
             self.soft_drop_timer_L1.stop()
+            self.soft_drop_timer_L2.stop()
+            self.soft_drop_timer_L3.stop()
+            self.drop_floating()
+
+        elif event.timerId() == self.soft_drop_timer_L2.timerId():
+            self.soft_drop_timer_L1.stop()
+            self.soft_drop_timer_L2.stop()
+            self.soft_drop_timer_L3.stop()
             self.drop_floating()
 
         else:
@@ -208,9 +218,16 @@ class TetrisBoard(QWidget):
     def gravity(self):
         if self.move_floating_piece(0, 1):
             self.soft_drop_timer_L1.stop()
+            self.soft_drop_timer_L2.stop()
+            self.soft_drop_timer_L3.stop()
             self.update()
-        elif not self.soft_drop_timer_L1.isActive():
+            return
+
+        if not self.soft_drop_timer_L1.isActive():
             self.soft_drop_timer_L1.start(self.L1, Qt.PreciseTimer, self)
+
+        if not self.soft_drop_timer_L2.isActive():
+            self.soft_drop_timer_L2.start(self.L2, Qt.PreciseTimer, self)
 
     def drop_floating(self):
         while self.move_floating_piece(0, 1):
@@ -279,6 +296,7 @@ class TetrisBoard(QWidget):
                     return
 
         self.soft_drop_timer_L1.stop()
+        self.soft_drop_timer_L2.stop()
         self.update_ghost()
         self.update()
 
@@ -333,7 +351,14 @@ class TetrisBoard(QWidget):
                     self.right_move_das_timer.start(self.das_speed, Qt.PreciseTimer, self)
 
                 self.left_move_das_timer.start(self.das_speed, self)
-                self.move_floating_piece(-1, 0)
+
+                if self.move_floating_piece(-1, 0):
+                    if self.soft_drop_timer_L1.isActive():
+                        if self.is_touching_ground():
+                            self.soft_drop_timer_L1.start(self.L1, Qt.PreciseTimer, self)
+                        else:
+                            self.soft_drop_timer_L1.stop()
+                            self.soft_drop_timer_L2.stop()
                 self.update()
 
         elif key == Qt.Key_Right:
@@ -354,12 +379,14 @@ class TetrisBoard(QWidget):
                             self.soft_drop_timer_L1.start(self.L1, Qt.PreciseTimer, self)
                         else:
                             self.soft_drop_timer_L1.stop()
+                            self.soft_drop_timer_L2.stop()
 
                 self.update()
 
         elif key == Qt.Key_Down:
             if not self.move_floating_piece(0, 1) and not self.soft_drop_timer_L1.isActive():
                 self.soft_drop_timer_L1.start(self.L1, self)
+                self.soft_drop_timer_L2.start(self.L2, self)
 
         elif key == Qt.Key_Up:
             if not event.isAutoRepeat():
@@ -421,6 +448,7 @@ class TetrisBoard(QWidget):
                 self.shifted_this_piece = True
                 self.shifted_tetromino.emit(self.shifted)
             self.soft_drop_timer_L1.stop()
+            self.soft_drop_timer_L2.stop()
             self.update_ghost()
 
     def update_ghost(self):

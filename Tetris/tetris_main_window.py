@@ -28,7 +28,7 @@ class TetrisMainWindow(QMainWindow):
 
         self.width = 10
         self.height = 20
-        self.resize(950, 630)
+        self.resize(980, 630)
 
         self.window = QWidget(*args, **kwargs)
         vb_left = QVBoxLayout()
