@@ -26,6 +26,7 @@ class TetrisBoard(QWidget):
     shifted_tetromino = pyqtSignal(Shape)
     next_tetromino_update = pyqtSignal(list)
     lines_cleared = pyqtSignal(int)
+    new_game_started = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
 
@@ -152,6 +153,7 @@ class TetrisBoard(QWidget):
         self.update_ghost()
         self.game_status = Status.PLAYING
         self.changed_game_status.emit(self.game_status)
+        self.new_game_started.emit()
         self.gravity_timer.start(self.speed, self)
 
     def resume_game(self):

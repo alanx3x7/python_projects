@@ -65,7 +65,7 @@ class TetrisMainWindow(QMainWindow):
         self.time_elapsed_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.time_elapsed_label.setFont(f)
         self.time_elapsed_label.setText("Time: %07.3f" % 0)
-        vb_right.addWidget(self.time_elapsed_label, 0, )
+        vb_right.addWidget(self.time_elapsed_label, 0, Qt.Alignment())
 
         # Create lines cleared label
         self.lines_cleared = 0
@@ -98,6 +98,7 @@ class TetrisMainWindow(QMainWindow):
         self.game_board.shifted_tetromino.connect(self.update_shift_piece)
         self.game_board.next_tetromino_update.connect(self.update_next_pieces)
         self.game_board.lines_cleared.connect(self.update_lines_cleared)
+        self.game_board.new_game_started.connect(self.new_game_started)
         vb_left.addWidget(self.game_board)
 
         # Create a window to display the shifted piece
@@ -125,6 +126,9 @@ class TetrisMainWindow(QMainWindow):
     def update_status_label(self, new_game_state):
         self.game_state_label.setText(new_game_state.name)
         self.current_game_state = new_game_state
+
+    def new_game_started(self):
+        self._timer_start_nsecs = time.time()
 
     def update_shift_piece(self, piece):
         self.shift_piece_display.update_identity(piece)
