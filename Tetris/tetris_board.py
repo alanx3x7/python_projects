@@ -61,7 +61,7 @@ class TetrisBoard(QWidget):
         self.soft_drop_timer_L1 = QBasicTimer()
         self.soft_drop_timer_L2 = QBasicTimer()
         self.soft_drop_timer_L3 = QBasicTimer()
-        self.L1 = 2000
+        self.L1 = 500
         self.L2 = 5000
         self.L3 = 20000
 
@@ -148,6 +148,7 @@ class TetrisBoard(QWidget):
         self.next_tetromino_update.emit(self.next_pieces)
 
         self.floating = Tetromino(self.start_pos)
+        self.soft_drop_timer_L3.start(self.L3, Qt.PreciseTimer, self)
         self.update_ghost()
         self.game_status = Status.PLAYING
         self.changed_game_status.emit(self.game_status)
@@ -207,6 +208,12 @@ class TetrisBoard(QWidget):
             self.drop_floating()
 
         elif event.timerId() == self.soft_drop_timer_L2.timerId():
+            self.soft_drop_timer_L1.stop()
+            self.soft_drop_timer_L2.stop()
+            self.soft_drop_timer_L3.stop()
+            self.drop_floating()
+
+        elif event.timerId() == self.soft_drop_timer_L3.timerId():
             self.soft_drop_timer_L1.stop()
             self.soft_drop_timer_L2.stop()
             self.soft_drop_timer_L3.stop()
@@ -297,6 +304,7 @@ class TetrisBoard(QWidget):
 
         self.soft_drop_timer_L1.stop()
         self.soft_drop_timer_L2.stop()
+        self.soft_drop_timer_L3.start(self.L3, Qt.PreciseTimer, self)
         self.update_ghost()
         self.update()
 
@@ -449,6 +457,7 @@ class TetrisBoard(QWidget):
                 self.shifted_tetromino.emit(self.shifted)
             self.soft_drop_timer_L1.stop()
             self.soft_drop_timer_L2.stop()
+            self.soft_drop_timer_L3.start(self.L3, Qt.PreciseTimer, self)
             self.update_ghost()
 
     def update_ghost(self):
