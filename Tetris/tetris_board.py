@@ -41,6 +41,7 @@ class TetrisBoard(QWidget):
         self.colour_table = [0x000000, 0xFF0000, 0x00FF00, 0x00FFFF, 0x800080, 0xFFFF00, 0xFFA500, 0x0000FF]
 
         self.game_status = Status.NOT_BEGUN
+        self.display_text = None
 
         # Key press things
         self.up_key_last_released = False
@@ -98,6 +99,9 @@ class TetrisBoard(QWidget):
         p.setRenderHint(QPainter.Antialiasing)
         self.paintFixed(p)
 
+        if self.display_text is not None:
+            self.paintText(p, event)
+
         if self.ghost is not None:
             self.paintGhost(p)
 
@@ -117,6 +121,15 @@ class TetrisBoard(QWidget):
                 inner = Qt.black if self.board[y, x] == 0 else QColor(self.colour_table[int(self.board[y, x])])
                 p.setBrush(QBrush(inner, Qt.SolidPattern))
                 p.drawRect(self.x_cell_corners[x], self.y_cell_corners[y], 30, 30)
+
+    def paintText(self, p, event):
+        p.setPen(QPen(Qt.gray, 0, Qt.SolidLine))
+        p.setBrush(QBrush(Qt.gray, Qt.SolidPattern))
+        p.drawRect(5, 260, self.size().width() - 9, 80)
+
+        p.setPen(QColor(255, 0, 0))
+        p.setFont(QFont('Decorative', 30))
+        p.drawText(event.rect(), Qt.AlignCenter, self.display_text)
 
     def paintFloat(self, p):
 
@@ -143,6 +156,30 @@ class TetrisBoard(QWidget):
                 p.drawRect(self.x_cell_corners[positions[0]], self.y_cell_corners[positions[1]], 30, 30)
 
     def start_game(self):
+
+        self.game_status = Status.NOT_BEGUN
+        self.changed_game_status.emit(self.game_status)
+        self.gravity_timer.stop()
+        self.board = np.zeros((self.height, self.width))
+        self.floating = None
+        self.update_ghost()
+        self.next_pieces = [Shape.NoShape] * self.num_next_pieces
+        self.next_tetromino_update.emit(self.next_pieces)
+
+        self.display_text = "Ready?"
+        self.update()
+
+        QTimer().singleShot(1000, self.start_stage_1)
+
+    def start_stage_1(self):
+        self.display_text = "Go!"
+        self.update()
+
+        QTimer().singleShot(1000, self.start_stage_2)
+
+    def start_stage_2(self):
+        self.display_text = None
+        self.update()
 
         for i in range(self.num_next_pieces):
             self.next_pieces[i] = Shape(random.randint(1, 7))
@@ -335,6 +372,8 @@ class TetrisBoard(QWidget):
 
         if self.game_status == Status.NOT_BEGUN and key == Qt.Key_Return:
             self.start_game()
+        elif self.game_status == Status.GAMEOVER and key == Qt.Key_R:
+            self.start_game()
 
         if key == Qt.Key_P:
             if self.game_status == Status.PAUSED:
@@ -391,8 +430,6 @@ class TetrisBoard(QWidget):
                             self.soft_drop_timer_L1.stop()
                             self.soft_drop_timer_L2.stop()
 
-                self.update()
-
         elif key == Qt.Key_Down:
             if not self.move_floating_piece(0, 1) and not self.soft_drop_timer_L1.isActive():
                 self.soft_drop_timer_L1.start(self.L1, self)
@@ -409,6 +446,12 @@ class TetrisBoard(QWidget):
         elif key == Qt.Key_Shift:
             if not event.isAutoRepeat():
                 self.handle_shift_key()
+
+        elif key == Qt.Key_Q:
+            self.end_game()
+
+        elif key == Qt.Key_F4:
+            self.start_game()
 
         self.update()
 
@@ -463,6 +506,11 @@ class TetrisBoard(QWidget):
             self.update_ghost()
 
     def update_ghost(self):
+
+        if self.floating is None:
+            self.ghost = None
+            return
+
         current_center = self.floating.center
         while self.move_floating_piece(0, 1, True):
             does_nothing = 1

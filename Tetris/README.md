@@ -4,3 +4,5 @@ https://tetris.wiki/
 
 
 need to increase size of board to fix bug where piece will get cut off
+
+https://realpython.com/python-web-applications/
