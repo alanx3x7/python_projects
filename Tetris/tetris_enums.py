@@ -37,3 +37,4 @@ class Shape(IntEnum):
     OShape = 5
     LShape = 6
     JShape = 7
+

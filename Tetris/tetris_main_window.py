@@ -5,6 +5,7 @@
 # Last Updated: 2020/01/08
 
 import time
+from enum import IntEnum
 
 # PyQt5 specific imports
 from PyQt5.QtWidgets import *
@@ -14,6 +15,12 @@ from PyQt5.QtGui import *
 from tetris_board import Status
 from tetris_board import TetrisBoard
 from tetris_tetromino_display_box import TetrominoDisplay
+
+
+class Game_Mode(IntEnum):
+    Sprint = 0
+    Battle2p = 1
+    Marathon = 2
 
 
 class TetrisMainWindow(QMainWindow):
@@ -32,6 +39,8 @@ class TetrisMainWindow(QMainWindow):
 
         self.title = 'Alan\'s Tetris'  # Name of the window to be opened
         self.setWindowTitle(self.title)  # Sets the name of the window to be the title
+
+        self.game_mode = Game_Mode.Sprint
 
         self.width = 10
         self.height = 20
@@ -130,6 +139,13 @@ class TetrisMainWindow(QMainWindow):
     def new_game_started(self):
         self._timer_start_nsecs = time.time()
 
+        self.lines_sent = 0
+        self.lines_sent_label.setText("Lines sent: %d" % self.lines_sent)
+        self.lines_cleared = 0
+        self.lines_cleared_label.setText("Lines cleared: %d" % self.lines_cleared)
+        self.current_combo = -1
+        self.combo_number_label.setText("Current combo: %d" % max(0, self.current_combo))
+
     def update_shift_piece(self, piece):
         self.shift_piece_display.update_identity(piece)
 
@@ -149,6 +165,10 @@ class TetrisMainWindow(QMainWindow):
         self.lines_sent += TetrisMainWindow.simple_lines_table[lines]
         self.lines_sent += TetrisMainWindow.combo_table_facebook[max(0, self.current_combo)]
         self.lines_sent_label.setText("Lines sent: %d" % self.lines_sent)
+
+        if self.game_mode == Game_Mode.Sprint:
+            if self.lines_cleared > 39:
+                self.game_board.end_game()
 
     def game_started(self):
         self._timer.start(10)
