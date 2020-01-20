@@ -2,7 +2,7 @@
 
 * Author: Alan Lai
 * Email: alan_lai@jhu.edu
-* Last Updated: 2020/01/08
+* Last Updated: 2020/01/20
 
 ## Background
 **_What is this?_** This is a series of small games that I've coded on my free 
@@ -33,4 +33,5 @@ could do, please let me know via email! Thanks!
 |:-------:          |-----------------|     
 |[Click Games](https://github.com/alanx3x7/python_projects/tree/master/Click_Game)          |A couple of point-and-click games involving circles
 |[Minesweeper](https://github.com/alanx3x7/python_projects/tree/master/Minesweeper)         |Your typical Windows minesweeper game with most features
-|[Takuzu/Binairo](https://https://github.com/alanx3x7/python_projects/tree/master/Takuzu)  |A simple Takuzu puzzle + solver|
+|[Takuzu/Binairo](https://github.com/alanx3x7/python_projects/tree/master/Takuzu)  |A simple Takuzu puzzle + solver|
+|[Tetris](https://github.com/alanx3x7/python_projects/tree/master/Tetris)| Typical tetris game|
