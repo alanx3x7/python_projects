@@ -162,6 +162,9 @@ class TetrisBoard(QWidget):
         self.gravity_timer.stop()
         self.board = np.zeros((self.height, self.width))
         self.floating = None
+        self.shifted = None
+        self.shifted_this_piece = False
+        self.shifted_tetromino.emit(Shape.NoShape)
         self.update_ghost()
         self.next_pieces = [Shape.NoShape] * self.num_next_pieces
         self.next_tetromino_update.emit(self.next_pieces)
@@ -370,6 +373,9 @@ class TetrisBoard(QWidget):
 
         key = event.key()
 
+        if key == Qt.Key_F4:
+            self.start_game()
+
         if self.game_status == Status.NOT_BEGUN and key == Qt.Key_Return:
             self.start_game()
         elif self.game_status == Status.GAMEOVER and key == Qt.Key_R:
@@ -449,9 +455,6 @@ class TetrisBoard(QWidget):
 
         elif key == Qt.Key_Q:
             self.end_game()
-
-        elif key == Qt.Key_F4:
-            self.start_game()
 
         self.update()
 

@@ -40,7 +40,7 @@ class TetrisMainWindow(QMainWindow):
         self.title = 'Alan\'s Tetris'  # Name of the window to be opened
         self.setWindowTitle(self.title)  # Sets the name of the window to be the title
 
-        self.game_mode = Game_Mode.Sprint
+        self.game_mode = Game_Mode.Battle2p
 
         self.width = 10
         self.height = 20
@@ -177,6 +177,8 @@ class TetrisMainWindow(QMainWindow):
         if self.current_game_state == Status.PLAYING:
             n_secs = time.time() - self._timer_start_nsecs  # Finds the time passed since the game started
             self.time_elapsed_label.setText("Time: %07.3f" % n_secs)
+            if self.game_mode == Game_Mode.Battle2p and n_secs > 120:
+                self.game_board.end_game()
         else:
             self._timer_start_nsecs += 0.01  # If not playing, we increment the timer (i.e. hints)
 
