@@ -200,6 +200,24 @@ class TetrisMainWindow(QMainWindow):
         lines_sent_box.addWidget(self.lines_sent_label, 0, Qt.Alignment())
         vb_stats.addLayout(lines_sent_box)
 
+        # Create num actions label
+        self.actions_done = 0
+        actions_done_box = QHBoxLayout()
+
+        self.actions_done_text = QLabel()
+        self.actions_done_text.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.actions_done_text.setFont(f)
+        self.actions_done_text.setText("Keys Pressed: ")
+
+        self.actions_done_label = QLabel()
+        self.actions_done_label.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
+        self.actions_done_label.setFont(f)
+        self.actions_done_label.setText("%d" % self.actions_done)
+
+        actions_done_box.addWidget(self.actions_done_text, 0, Qt.Alignment())
+        actions_done_box.addWidget(self.actions_done_label, 0, Qt.Alignment())
+        vb_stats.addLayout(actions_done_box)
+
         self.stats_group_box.setLayout(vb_stats)
         vb_right.addWidget(self.stats_group_box)
 
@@ -210,11 +228,8 @@ class TetrisMainWindow(QMainWindow):
         self.game_board.next_tetromino_update.connect(self.update_next_pieces)
         self.game_board.lines_cleared.connect(self.update_lines_cleared)
         self.game_board.new_game_started.connect(self.new_game_started)
+        self.game_board.key_press.connect(self.key_pressed)
         vb_left.addWidget(self.game_board)
-
-        # Create a window to display the shifted piece
-        self.shift_piece_display = TetrominoDisplay()
-        hb.addWidget(self.shift_piece_display, 1, Qt.Alignment())
 
         # Create windows to display next pieces
         self.next_piece_display_1 = TetrominoDisplay()
@@ -225,6 +240,10 @@ class TetrisMainWindow(QMainWindow):
         vb_next.addWidget(self.next_piece_display_2, 1, Qt.Alignment())
         vb_next.addWidget(self.next_piece_display_3, 1, Qt.Alignment())
         vb_next.addWidget(self.next_piece_display_4, 3, Qt.Alignment())
+
+        # Create a window to display the shifted piece
+        self.shift_piece_display = TetrominoDisplay()
+        hb.addWidget(self.shift_piece_display, 1, Qt.Alignment())
 
         hb.addLayout(vb_left, 2)
         hb.addLayout(vb_next, 1)
@@ -257,6 +276,8 @@ class TetrisMainWindow(QMainWindow):
         self.num_tetrises_label.setText("%d" % self.num_tetrises)
         self.num_pieces_placed = 0
         self.num_pieces_label.setText("%d" % self.num_pieces_placed)
+        self.actions_done = 0
+        self.actions_done_label.setText("%d" % self.actions_done)
 
     def update_shift_piece(self, piece):
         self.shift_piece_display.update_identity(piece)
@@ -305,4 +326,6 @@ class TetrisMainWindow(QMainWindow):
         else:
             self._timer_start_nsecs += 0.01  # If not playing, we increment the timer (i.e. hints)
 
-
+    def key_pressed(self):
+        self.actions_done += 1
+        self.actions_done_label.setText("%d" % self.actions_done)

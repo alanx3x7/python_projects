@@ -27,6 +27,7 @@ class TetrisBoard(QWidget):
     next_tetromino_update = pyqtSignal(list)
     lines_cleared = pyqtSignal(int)
     new_game_started = pyqtSignal()
+    key_press = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
 
@@ -458,6 +459,9 @@ class TetrisBoard(QWidget):
 
         elif key == Qt.Key_Q:
             self.end_game()
+
+        if not event.isAutoRepeat():
+            self.key_press.emit()
 
         self.update()
 
