@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="3ad5d6a5-a5dc-4948-a4d7-6a805a5c862a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tetris/tetris_board.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tetris/tetris_board.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Tetris/tetris_main_window.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tetris/tetris_main_window.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -203,22 +202,22 @@
       <screen x="0" y="31" width="1280" height="689" />
     </state>
     <state x="421" y="131" key="FileChooserDialogImpl/0.31.1280.689@0.31.1280.689" timestamp="1578648126350" />
-    <state width="1259" height="56" key="GridCell.Tab.0.bottom" timestamp="1579578971244">
+    <state width="1259" height="56" key="GridCell.Tab.0.bottom" timestamp="1579581997035">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state width="1259" height="56" key="GridCell.Tab.0.bottom/0.31.1280.689@0.31.1280.689" timestamp="1579578971244" />
-    <state width="1259" height="56" key="GridCell.Tab.0.center" timestamp="1579578971243">
+    <state width="1259" height="56" key="GridCell.Tab.0.bottom/0.31.1280.689@0.31.1280.689" timestamp="1579581997035" />
+    <state width="1259" height="56" key="GridCell.Tab.0.center" timestamp="1579581997035">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state width="1259" height="56" key="GridCell.Tab.0.center/0.31.1280.689@0.31.1280.689" timestamp="1579578971243" />
-    <state width="1259" height="56" key="GridCell.Tab.0.left" timestamp="1579578971242">
+    <state width="1259" height="56" key="GridCell.Tab.0.center/0.31.1280.689@0.31.1280.689" timestamp="1579581997035" />
+    <state width="1259" height="56" key="GridCell.Tab.0.left" timestamp="1579581997035">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state width="1259" height="56" key="GridCell.Tab.0.left/0.31.1280.689@0.31.1280.689" timestamp="1579578971242" />
-    <state width="1259" height="56" key="GridCell.Tab.0.right" timestamp="1579578971244">
+    <state width="1259" height="56" key="GridCell.Tab.0.left/0.31.1280.689@0.31.1280.689" timestamp="1579581997035" />
+    <state width="1259" height="56" key="GridCell.Tab.0.right" timestamp="1579581997035">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state width="1259" height="56" key="GridCell.Tab.0.right/0.31.1280.689@0.31.1280.689" timestamp="1579578971244" />
+    <state width="1259" height="56" key="GridCell.Tab.0.right/0.31.1280.689@0.31.1280.689" timestamp="1579581997035" />
     <state width="1259" height="208" key="GridCell.Tab.1.bottom" timestamp="1579551994677">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
@@ -239,9 +238,9 @@
       <screen x="0" y="31" width="1280" height="689" />
     </state>
     <state x="142" y="30" key="SettingsEditor/0.31.1280.689@0.31.1280.689" timestamp="1579481593964" />
-    <state x="303" y="41" width="672" height="678" key="search.everywhere.popup" timestamp="1579575154383">
+    <state x="303" y="41" width="672" height="678" key="search.everywhere.popup" timestamp="1579581970490">
       <screen x="0" y="31" width="1280" height="689" />
     </state>
-    <state x="303" y="41" width="672" height="678" key="search.everywhere.popup/0.31.1280.689@0.31.1280.689" timestamp="1579575154383" />
+    <state x="303" y="41" width="672" height="678" key="search.everywhere.popup/0.31.1280.689@0.31.1280.689" timestamp="1579581970490" />
   </component>
 </project>

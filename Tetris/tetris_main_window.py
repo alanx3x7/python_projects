@@ -54,6 +54,7 @@ class TetrisMainWindow(QMainWindow):
 
         self.window = QWidget(*args, **kwargs)
         vb_left = QVBoxLayout()
+        vb_center = QVBoxLayout()
         vb_right = QVBoxLayout()
         vb_next = QVBoxLayout()
         hb = QHBoxLayout()
@@ -229,7 +230,7 @@ class TetrisMainWindow(QMainWindow):
         self.game_board.lines_cleared.connect(self.update_lines_cleared)
         self.game_board.new_game_started.connect(self.new_game_started)
         self.game_board.key_press.connect(self.key_pressed)
-        vb_left.addWidget(self.game_board)
+        vb_center.addWidget(self.game_board)
 
         # Create windows to display next pieces
         self.next_piece_display_1 = TetrominoDisplay()
@@ -243,9 +244,18 @@ class TetrisMainWindow(QMainWindow):
 
         # Create a window to display the shifted piece
         self.shift_piece_display = TetrominoDisplay()
-        hb.addWidget(self.shift_piece_display, 1, Qt.Alignment())
+        vb_left.addWidget(self.shift_piece_display, 1, Qt.Alignment())
 
-        hb.addLayout(vb_left, 2)
+        self.main_information = QLabel()
+        self.main_information.setAlignment(Qt.AlignTop | Qt.AlignHCenter)
+        f.setPointSize(20)
+        f.setWeight(85)
+        self.main_information.setFont(f)
+        self.main_information.setText("0")
+        vb_left.addWidget(self.main_information, 3, Qt.AlignTop)
+
+        hb.addLayout(vb_left, 1)
+        hb.addLayout(vb_center, 2)
         hb.addLayout(vb_next, 1)
         hb.addLayout(vb_right, 2)
 
