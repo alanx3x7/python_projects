@@ -69,37 +69,139 @@ class TetrisMainWindow(QMainWindow):
         self.game_state_label.setText("Press Enter to Start")
         vb_right.addWidget(self.game_state_label, 0, Qt.Alignment())
 
-        # Time label
-        self.time_elapsed_label = QLabel()
-        self.time_elapsed_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.time_elapsed_label.setFont(f)
-        self.time_elapsed_label.setText("Time: %07.3f" % 0)
-        vb_right.addWidget(self.time_elapsed_label, 0, Qt.Alignment())
+        self.stats_group_box = QGroupBox("Statistics")
+        vb_stats = QVBoxLayout()
+        f.setPointSize(10)
+        f.setWeight(55)
 
-        # Create lines cleared label
-        self.lines_cleared = 0
-        self.lines_cleared_label = QLabel()
-        self.lines_cleared_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
-        self.lines_cleared_label.setFont(f)
-        self.lines_cleared_label.setText("Lines cleared: %d" % self.lines_cleared)
-        vb_right.addWidget(self.lines_cleared_label, 0, Qt.Alignment())
+        # Time label
+        time_elapsed_box = QHBoxLayout()
+
+        self.time_elapsed_text = QLabel()
+        self.time_elapsed_text.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.time_elapsed_text.setFont(f)
+        self.time_elapsed_text.setText("Time Elapsed: ")
+
+        self.time_elapsed_label = QLabel()
+        self.time_elapsed_label.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
+        self.time_elapsed_label.setFont(f)
+        self.time_elapsed_label.setText("%07.3f" % 0)
+
+        time_elapsed_box.addWidget(self.time_elapsed_text, 0, Qt.Alignment())
+        time_elapsed_box.addWidget(self.time_elapsed_label, 0, Qt.Alignment())
+        vb_stats.addLayout(time_elapsed_box)
 
         # Create combo label
         self.is_in_combo = False
         self.current_combo = -1
+        current_combo_box = QHBoxLayout()
+
+        self.combo_number_text = QLabel()
+        self.combo_number_text.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.combo_number_text.setFont(f)
+        self.combo_number_text.setText("Combo number: ")
+
         self.combo_number_label = QLabel()
-        self.combo_number_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.combo_number_label.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
         self.combo_number_label.setFont(f)
-        self.combo_number_label.setText("Combo number: %d" % max(0, self.current_combo))
-        vb_right.addWidget(self.combo_number_label, 0, Qt.Alignment())
+        self.combo_number_label.setText("%d" % max(0, self.current_combo))
+
+        current_combo_box.addWidget(self.combo_number_text, 0, Qt.Alignment())
+        current_combo_box.addWidget(self.combo_number_label, 0, Qt.Alignment())
+        vb_stats.addLayout(current_combo_box)
+
+        # Create max combo label
+        self.max_combo = 0
+        max_combo_box = QHBoxLayout()
+
+        self.max_combo_text = QLabel()
+        self.max_combo_text.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.max_combo_text.setFont(f)
+        self.max_combo_text.setText("Max combo: ")
+
+        self.max_combo_label = QLabel()
+        self.max_combo_label.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
+        self.max_combo_label.setFont(f)
+        self.max_combo_label.setText("%d" % self.max_combo)
+
+        max_combo_box.addWidget(self.max_combo_text, 0, Qt.Alignment())
+        max_combo_box.addWidget(self.max_combo_label, 0, Qt.Alignment())
+        vb_stats.addLayout(max_combo_box)
+
+        # Create number of tetrises label
+        self.num_tetrises = 0
+        num_tetrises_box = QHBoxLayout()
+
+        self.num_tetrises_text = QLabel()
+        self.num_tetrises_text.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.num_tetrises_text.setFont(f)
+        self.num_tetrises_text.setText("Number of tetrises: ")
+
+        self.num_tetrises_label = QLabel()
+        self.num_tetrises_label.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
+        self.num_tetrises_label.setFont(f)
+        self.num_tetrises_label.setText("%d" % self.num_tetrises)
+
+        num_tetrises_box.addWidget(self.num_tetrises_text, 0, Qt.Alignment())
+        num_tetrises_box.addWidget(self.num_tetrises_label, 0, Qt.Alignment())
+        vb_stats.addLayout(num_tetrises_box)
+
+        # Create number of pieces placed label
+        self.num_pieces_placed = 0
+        num_pieces_box = QHBoxLayout()
+
+        self.num_pieces_text = QLabel()
+        self.num_pieces_text.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.num_pieces_text.setFont(f)
+        self.num_pieces_text.setText("Number of pieces: ")
+
+        self.num_pieces_label = QLabel()
+        self.num_pieces_label.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
+        self.num_pieces_label.setFont(f)
+        self.num_pieces_label.setText("%d" % self.num_pieces_placed)
+
+        num_pieces_box.addWidget(self.num_pieces_text, 0, Qt.Alignment())
+        num_pieces_box.addWidget(self.num_pieces_label, 0, Qt.Alignment())
+        vb_stats.addLayout(num_pieces_box)
+
+        # Create lines cleared label
+        self.lines_cleared = 0
+        lines_cleared_box = QHBoxLayout()
+
+        self.lines_cleared_text = QLabel()
+        self.lines_cleared_text.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.lines_cleared_text.setFont(f)
+        self.lines_cleared_text.setText("Lines cleared: ")
+
+        self.lines_cleared_label = QLabel()
+        self.lines_cleared_label.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
+        self.lines_cleared_label.setFont(f)
+        self.lines_cleared_label.setText("%d" % self.lines_cleared)
+
+        lines_cleared_box.addWidget(self.lines_cleared_text, 0, Qt.Alignment())
+        lines_cleared_box.addWidget(self.lines_cleared_label, 0, Qt.Alignment())
+        vb_stats.addLayout(lines_cleared_box)
 
         # Create lines sent label
         self.lines_sent = 0
+        lines_sent_box = QHBoxLayout()
+
+        self.lines_sent_text = QLabel()
+        self.lines_sent_text.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.lines_sent_text.setFont(f)
+        self.lines_sent_text.setText("Lines Sent: ")
+
         self.lines_sent_label = QLabel()
-        self.lines_sent_label.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.lines_sent_label.setAlignment(Qt.AlignVCenter | Qt.AlignRight)
         self.lines_sent_label.setFont(f)
-        self.lines_sent_label.setText("Lines Sent: %d" % self.lines_sent)
-        vb_right.addWidget(self.lines_sent_label, 0, Qt.Alignment())
+        self.lines_sent_label.setText("%d" % self.lines_sent)
+
+        lines_sent_box.addWidget(self.lines_sent_text, 0, Qt.Alignment())
+        lines_sent_box.addWidget(self.lines_sent_label, 0, Qt.Alignment())
+        vb_stats.addLayout(lines_sent_box)
+
+        self.stats_group_box.setLayout(vb_stats)
+        vb_right.addWidget(self.stats_group_box)
 
         # Create the board
         self.game_board = TetrisBoard()
@@ -133,18 +235,28 @@ class TetrisMainWindow(QMainWindow):
         self.show()
 
     def update_status_label(self, new_game_state):
-        self.game_state_label.setText(new_game_state.name)
+        if new_game_state != Status.NOT_BEGUN:
+            self.game_state_label.setText(new_game_state.name)
+        else:
+            self.game_state_label.setText("PLAYING")
+
         self.current_game_state = new_game_state
 
     def new_game_started(self):
         self._timer_start_nsecs = time.time()
 
         self.lines_sent = 0
-        self.lines_sent_label.setText("Lines sent: %d" % self.lines_sent)
+        self.lines_sent_label.setText("%d" % self.lines_sent)
         self.lines_cleared = 0
-        self.lines_cleared_label.setText("Lines cleared: %d" % self.lines_cleared)
+        self.lines_cleared_label.setText("%d" % self.lines_cleared)
         self.current_combo = -1
-        self.combo_number_label.setText("Current combo: %d" % max(0, self.current_combo))
+        self.combo_number_label.setText("%d" % max(0, self.current_combo))
+        self.max_combo = 0
+        self.max_combo_label.setText("%d" % self.max_combo)
+        self.num_tetrises = 0
+        self.num_tetrises_label.setText("%d" % self.num_tetrises)
+        self.num_pieces_placed = 0
+        self.num_pieces_label.setText("%d" % self.num_pieces_placed)
 
     def update_shift_piece(self, piece):
         self.shift_piece_display.update_identity(piece)
@@ -157,14 +269,25 @@ class TetrisMainWindow(QMainWindow):
 
     def update_lines_cleared(self, lines):
         self.lines_cleared += lines
-        self.lines_cleared_label.setText("Lines cleared: %d" % self.lines_cleared)
+        self.lines_cleared_label.setText("%d" % self.lines_cleared)
 
         self.current_combo = self.current_combo + 1 if lines > 0 else -1
-        self.combo_number_label.setText("Current combo: %d" % max(0, self.current_combo))
+        self.combo_number_label.setText("%d" % max(0, self.current_combo))
+
+        if self.current_combo > self.max_combo:
+            self.max_combo = self.current_combo
+            self.max_combo_label.setText("%d" % self.max_combo)
+
+        self.num_pieces_placed += 1
+        self.num_pieces_label.setText("%d" % self.num_pieces_placed)
 
         self.lines_sent += TetrisMainWindow.simple_lines_table[lines]
         self.lines_sent += TetrisMainWindow.combo_table_facebook[max(0, self.current_combo)]
-        self.lines_sent_label.setText("Lines sent: %d" % self.lines_sent)
+        self.lines_sent_label.setText("%d" % self.lines_sent)
+
+        if lines == 4:
+            self.num_tetrises += 1
+            self.num_tetrises_label.setText("%d" % self.num_tetrises)
 
         if self.game_mode == Game_Mode.Sprint:
             if self.lines_cleared > 39:
@@ -176,7 +299,7 @@ class TetrisMainWindow(QMainWindow):
     def update_timer(self):
         if self.current_game_state == Status.PLAYING:
             n_secs = time.time() - self._timer_start_nsecs  # Finds the time passed since the game started
-            self.time_elapsed_label.setText("Time: %07.3f" % n_secs)
+            self.time_elapsed_label.setText("%07.3f" % n_secs)
             if self.game_mode == Game_Mode.Battle2p and n_secs > 120:
                 self.game_board.end_game()
         else:

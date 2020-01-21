@@ -208,6 +208,9 @@ class TetrisBoard(QWidget):
 
     def end_game(self):
         self.game_status = Status.GAMEOVER
+        self.soft_drop_timer_L1.stop()
+        self.soft_drop_timer_L2.stop()
+        self.soft_drop_timer_L3.stop()
         self.changed_game_status.emit(self.game_status)
         self.gravity_timer.stop()
 
